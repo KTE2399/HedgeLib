@@ -17,6 +17,7 @@ namespace HedgeEdit
     {
         // Variables/Constants
         public static List<ViewportObject> Objects = new List<ViewportObject>();
+        public static Dictionary<string, int> Textures = new Dictionary<string, int>();
         public static Model DefaultCube;
 
         public static Vector3 CameraPos = Vector3.Zero, CameraRot = new Vector3(-90, 0, 0);
@@ -30,7 +31,6 @@ namespace HedgeEdit
 
         private static float camSpeed = normalSpeed;
         private const float normalSpeed = 1, fastSpeed = 4;
-        public static int Texture = 0;
 
         // Methods
         public static void Init(GLControl viewport)
@@ -40,9 +40,8 @@ namespace HedgeEdit
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-            Texture = LoadTexture("test.png");
             // Load the shaders
-            Shaders.LoadAll();
+            //Shaders.LoadAll();
         }
 
         public static void Resize(int width, int height)
@@ -130,62 +129,50 @@ namespace HedgeEdit
             var view = Matrix4.LookAt(CameraPos,
                 CameraPos + camForward, camUp);
 
-            //var projection = Matrix4.CreatePerspectiveFieldOfView(
-            //    MathHelper.DegreesToRadians(FOV),
-            //    (float)vp.Width / vp.Height, NearDistance, FarDistance);
-
             prevMousePos = Cursor.Position;
 
-            // Transform Gizmos
-            // float screenX = (float)Math.Min(Math.Max(0,
-            //    vpMousePos.X), vp.Size.Width) / vp.Size.Width;
-
-            // float screenY = (float)Math.Min(Math.Max(0,
-            //    vpMousePos.Y), vp.Size.Height) / vp.Size.Height;
-            // TODO
-
-            // Update shader transform matrices
-            //int viewLoc = GL.GetUniformLocation(defaultID, "view");
-            //int projectionLoc = GL.GetUniformLocation(defaultID, "projection");
-
-            //GL.UniformMatrix4(viewLoc, false, ref view);
-            //GL.UniformMatrix4(projectionLoc, false, ref projection);
-
-            // Draw all models in the scene
-            //foreach (var mdl in Objects)
-            // {
-            //   mdl.Draw(defaultID);
-            // }
-
-            DrawTexturedRect(0, 0, 100, 100);
+            foreach (var obj in Objects)
+            {
+                obj.Draw();
+            }
 
             // Swap our buffers
             vp.SwapBuffers();
         }
 
-        public static void DrawTexturedRect(int x, int y, int width, int height)
+        public static void DrawTexturedRect(float x, float y, float width, float height, int texture)
         {
-            float w = (1f / vp.Width) * (float)width;
-            float h = (1f / vp.Height) * (float)height;
-            float x2 = (x / 1f) - 1f;
-            float y2 = (y / 1f) - 1f;
-            GL.BindTexture(TextureTarget.Texture2D, Texture);
-            GL.Begin(BeginMode.Quads);
+            GL.BindTexture(TextureTarget.Texture2D, texture);
+            DrawTexturedRect(x, y, width, height);
+        }
+        
+        public static void DrawTexturedRect(float x, float y, float width, float height)
+        {
+            float w = (1f / vp.Width) * width;
+            float h = (1f / vp.Height) * height;
+            float x2 = (x / vp.Width) - 1f;
+            float y2 = ((y + height) / vp.Height) - 1f;
+            GL.Begin(PrimitiveType.Quads);
 
-            GL.TexCoord2(0, 1); GL.Vertex2(x2, y2);
-            GL.TexCoord2(1, 1); GL.Vertex2(x2 + w, y2);
-            GL.TexCoord2(1, 0); GL.Vertex2(x2 + w, y2 + h);
-            GL.TexCoord2(0, 0); GL.Vertex2(x2, y2 + h);
+            GL.TexCoord2(0, 1); GL.Vertex2(x2, -y2);
+            GL.TexCoord2(1, 1); GL.Vertex2(x2 + w, -y2);
+            GL.TexCoord2(1, 0); GL.Vertex2(x2 + w, -y2 + h);
+            GL.TexCoord2(0, 0); GL.Vertex2(x2, -y2 + h);
 
             GL.End();
-
-
         }
 
         public static int LoadTexture(string file)
         {
-            Bitmap bitmap = new Bitmap(file);
+            return LoadTexture(new Bitmap(file), file);
+        }
 
+        public static int LoadTexture(Bitmap bitmap, string file = null)
+        {
+            if (Textures.ContainsKey(file))
+            {
+                return Textures[file];
+            }
             int tex;
             GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
 
@@ -208,23 +195,9 @@ namespace HedgeEdit
             return tex;
         }
 
-        public static void AddModel(Model mdl)
+        public static void AddObject(ViewportObject obj)
         {
-            Objects.Add(new ViewportObject(mdl));
-        }
-
-        public static void AddModel(Model mdl, Vector3 pos,
-            Quaternion rot, object customData = null)
-        {
-            Objects.Add(new ViewportObject(mdl,
-                pos, rot, customData));
-        }
-
-        public static void AddModel(Model mdl, HedgeLib.Vector3 pos,
-            HedgeLib.Quaternion rot, object customData = null)
-        {
-            AddModel(mdl, Types.ToOpenTK(pos),
-                Types.ToOpenTK(rot), customData);
+            Objects.Add(obj);
         }
 
         public static void Clear()

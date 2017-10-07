@@ -308,9 +308,9 @@ namespace HedgeEdit
         {
             transform.Position *= unitMultiplier;
 
-            Viewport.AddModel(Viewport.DefaultCube,
-                transform.Position,
-                transform.Rotation, customData);
+            //Viewport.AddModel(Viewport.DefaultCube,
+            //    transform.Position,
+            //    transform.Rotation, customData);
         }
     }
 }

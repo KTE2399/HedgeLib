@@ -168,6 +168,10 @@ namespace HedgeEdit
         {
             GameList.Load(Program.StartupPath);
             Viewport.Init(viewport);
+            var test = new ViewportObject("test.png");
+            test.Position = new OpenTK.Vector2(100, 100);
+            test.Size = new OpenTK.Vector2(200, 200);
+            Viewport.AddObject(test);
         }
 
         private void Application_Idle(object sender, EventArgs e)
