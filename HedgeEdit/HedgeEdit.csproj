@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="S2HDSetXML.cs" />
     <Compile Include="SceneView.cs">
       <SubType>Form</SubType>
     </Compile>

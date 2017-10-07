@@ -269,7 +269,19 @@ namespace HedgeEdit
 
                         return;
                     }
+                case "s2hdsetxml":
+                    {
+                        var setData = Types.GetSetDataOfType(Types.DataTypes.S2HD);
+                        Console.WriteLine($"Loading sets BINDING.binding");
+                        setData.Load(Path.Combine(Program.StartupPath, "BINDING.binding"));
+                        for (int i = 0; i < setData.Objects.Count; i++)
+                        {
+                            var obj = setData.Objects[i];
+                            SpawnObject(obj.Transform,game.UnitMultiplier,obj);
+                        }
 
+                        return;
+                    }
                 case "setdata":
                     {
                         var setData = Types.GetSetDataOfType(game.DataType);

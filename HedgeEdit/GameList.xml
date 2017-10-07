@@ -19,7 +19,14 @@
 			<!-- TODO -->
 		</LoadInfo>
 	</Game>
-	
+  	<Game shortName="S2HD" name="Sonic 2 HD" dataType="S2HD">
+      <UnpackInfo>
+      </UnpackInfo>
+		<LoadInfo>
+			<File type="s2hdsetxml">Levels/{0}/BINDING.binding</File>
+		</LoadInfo>
+	</Game>
+    
 	<Game shortName="Unleashed" name="Sonic Unleashed" dataType="Gens">
 		<UnpackInfo>
 			<!-- #Arc (E.G. #ActD_MykonosAct2) -->

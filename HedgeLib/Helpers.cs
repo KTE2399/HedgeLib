@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Xml.Linq;
+using OpenTK;
 
 namespace HedgeLib
 {
@@ -97,6 +98,21 @@ namespace HedgeLib
 				(y == null) ? 0 : Convert.ToSingle(y.Value),
 				(z == null) ? 0 : Convert.ToSingle(z.Value));
 		}
+
+        public static Vector2 XMLReadVector2(XElement element) {
+            var x = element.Element("x");
+            var y = element.Element("y");
+
+            if (x == null)
+                x = element.Element("X");
+            if (y == null)
+                y = element.Element("Y");
+            return new Vector2
+            {
+                X = Convert.ToSingle(x),
+                Y = Convert.ToSingle(y)
+            };
+        }
 
 		public static Vector4 XMLReadVector4(XElement element)
 		{
