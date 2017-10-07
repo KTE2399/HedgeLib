@@ -2,6 +2,7 @@
 using HedgeLib.Sets;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 
 namespace HedgeEdit
@@ -172,6 +173,18 @@ namespace HedgeEdit
             test.Position = new OpenTK.Vector2(100, 100);
             test.Size = new OpenTK.Vector2(200, 200);
             Viewport.AddObject(test);
+            if (File.Exists("TILESET.tileset.xml"))
+            {
+                var tileSet = new TileSet();
+                tileSet.Load("TILESET.tileset.xml");
+                var frame = tileSet.Tiles[1371].Frames[0];
+                var tilesetTexture = new ViewportObject("TILESET" + tileSet.Textures[0] + ".png");
+                tilesetTexture.Position = new OpenTK.Vector2(300, 100);
+                tilesetTexture.Size = new OpenTK.Vector2(200, 200);
+                tilesetTexture.Crop = new OpenTK.Vector4(frame.X, frame.Y, 64, 64);
+                Viewport.AddObject(tilesetTexture);
+
+            }
         }
 
         private void Application_Idle(object sender, EventArgs e)

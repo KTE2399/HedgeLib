@@ -162,6 +162,36 @@ namespace HedgeEdit
             GL.End();
         }
 
+        public static void DrawTexturedRect(float x, float y, float width, float height, float xCrop, float yCrop, float wCrop, float hCrop, int texture)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, texture);
+            DrawTexturedRect(x, y, width, height, xCrop, yCrop, wCrop, hCrop);
+        }
+
+        public static void DrawTexturedRect(float x, float y, float width, float height, float xCrop, float yCrop, float wCrop, float hCrop)
+        {
+
+            float texW, texH;
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out texW);
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out texH);
+            float w = (1f / vp.Width) * width;
+            float h = (1f / vp.Height) * height;
+            float x2 = (x / vp.Width) - 1f;
+            float y2 = ((y + height) / vp.Height) - 1f;
+            float xCrop2 = (xCrop / texW);
+            float yCrop2 = (yCrop / texH);
+            float wCrop2 = (wCrop / texW);
+            float hCrop2 = (hCrop / texH);
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.TexCoord2(xCrop2, yCrop2 + hCrop2); GL.Vertex2(x2, -y2);
+            GL.TexCoord2(xCrop2 + wCrop2, yCrop2 + hCrop2); GL.Vertex2(x2 + w, -y2);
+            GL.TexCoord2(xCrop2 + wCrop2, yCrop2); GL.Vertex2(x2 + w, -y2 + h);
+            GL.TexCoord2(xCrop2, yCrop2); GL.Vertex2(x2, -y2 + h);
+
+            GL.End();
+        }
+
         public static int LoadTexture(string file)
         {
             return LoadTexture(new Bitmap(file), file);
