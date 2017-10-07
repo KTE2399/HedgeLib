@@ -86,6 +86,9 @@
     </Compile>
     <Compile Include="Types.cs" />
     <Compile Include="Viewport.cs" />
+    <Content Include="test.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="SceneView.resx">
       <DependentUpon>SceneView.cs</DependentUpon>
     </EmbeddedResource>

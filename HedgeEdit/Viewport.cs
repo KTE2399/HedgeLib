@@ -1,11 +1,13 @@
 ﻿using HedgeEdit.Properties;
 using HedgeLib.Models;
 using OpenTK;
-using OpenTK.Graphics.ES30;
+//using OpenTK.Graphics.ES30;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
@@ -28,59 +30,28 @@ namespace HedgeEdit
 
         private static float camSpeed = normalSpeed;
         private const float normalSpeed = 1, fastSpeed = 4;
+        public static int Texture = 0;
 
         // Methods
         public static void Init(GLControl viewport)
         {
             vp = viewport;
             GL.Enable(EnableCap.DepthTest);
-
+            GL.Enable(EnableCap.Texture2D);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            Texture = LoadTexture("test.png");
             // Load the shaders
             Shaders.LoadAll();
-
-            // TODO: Remove the following debug stuff
-            // YES I KNOW THIS IS TRASH LOL
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var mesh = new Mesh();
-
-            using (var reader = new StringReader(Resources.DefaultCube))
-            {
-                // Vertices
-                var vertices = reader.ReadLine().Split(',');
-                mesh.Vertices = new float[vertices.Length];
-
-                for (int i = 0; i < vertices.Length; ++i)
-                {
-                    mesh.Vertices[i] = float.Parse(vertices[i]);
-                }
-
-                // Normals
-                var normals = reader.ReadLine().Split(',');
-                mesh.Normals = new float[normals.Length];
-
-                for (int i = 0; i < normals.Length; ++i)
-                {
-                    mesh.Normals[i] = float.Parse(normals[i]);
-                }
-
-                // Indices
-                var indices = reader.ReadLine().Split(',');
-                mesh.Triangles = new uint[indices.Length];
-
-                for (int i = 0; i < indices.Length; ++i)
-                {
-                    mesh.Triangles[i] = uint.Parse(indices[i]) - 1;
-                }
-            }
-
-            DefaultCube = new Model(mesh);
-            watch.Stop();
-            Console.WriteLine("Debug model init time: {0}", watch.ElapsedMilliseconds);
         }
 
         public static void Resize(int width, int height)
         {
             GL.Viewport(0, 0, width, height);
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Ortho(0, width, height, 0, -16, -16);
+            GL.MatrixMode(MatrixMode.Modelview);
         }
 
         public static void Render()
@@ -93,8 +64,8 @@ namespace HedgeEdit
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             // Start using our "Default" program and bind our VAO
-            int defaultID = Shaders.ShaderPrograms["ColorTest"]; // TODO: Make this more efficient
-            GL.UseProgram(defaultID);
+            //int defaultID = Shaders.ShaderPrograms["ColorTest"]; // TODO: Make this more efficient
+            //GL.UseProgram(defaultID);
 
             // Update camera transform
             var mouseState = Mouse.GetState();
@@ -159,9 +130,9 @@ namespace HedgeEdit
             var view = Matrix4.LookAt(CameraPos,
                 CameraPos + camForward, camUp);
 
-            var projection = Matrix4.CreatePerspectiveFieldOfView(
-                MathHelper.DegreesToRadians(FOV),
-                (float)vp.Width / vp.Height, NearDistance, FarDistance);
+            //var projection = Matrix4.CreatePerspectiveFieldOfView(
+            //    MathHelper.DegreesToRadians(FOV),
+            //    (float)vp.Width / vp.Height, NearDistance, FarDistance);
 
             prevMousePos = Cursor.Position;
 
@@ -174,20 +145,67 @@ namespace HedgeEdit
             // TODO
 
             // Update shader transform matrices
-            int viewLoc = GL.GetUniformLocation(defaultID, "view");
-            int projectionLoc = GL.GetUniformLocation(defaultID, "projection");
+            //int viewLoc = GL.GetUniformLocation(defaultID, "view");
+            //int projectionLoc = GL.GetUniformLocation(defaultID, "projection");
 
-            GL.UniformMatrix4(viewLoc, false, ref view);
-            GL.UniformMatrix4(projectionLoc, false, ref projection);
+            //GL.UniformMatrix4(viewLoc, false, ref view);
+            //GL.UniformMatrix4(projectionLoc, false, ref projection);
 
             // Draw all models in the scene
-            foreach (var mdl in Objects)
-            {
-                mdl.Draw(defaultID);
-            }
+            //foreach (var mdl in Objects)
+            // {
+            //   mdl.Draw(defaultID);
+            // }
+
+            DrawTexturedRect(0, 0, 100, 100);
 
             // Swap our buffers
             vp.SwapBuffers();
+        }
+
+        public static void DrawTexturedRect(int x, int y, int width, int height)
+        {
+            float w = (1f / vp.Width) * (float)width;
+            float h = (1f / vp.Height) * (float)height;
+            float x2 = (x / 1f) - 1f;
+            float y2 = (y / 1f) - 1f;
+            GL.BindTexture(TextureTarget.Texture2D, Texture);
+            GL.Begin(BeginMode.Quads);
+
+            GL.TexCoord2(0, 1); GL.Vertex2(x2, y2);
+            GL.TexCoord2(1, 1); GL.Vertex2(x2 + w, y2);
+            GL.TexCoord2(1, 0); GL.Vertex2(x2 + w, y2 + h);
+            GL.TexCoord2(0, 0); GL.Vertex2(x2, y2 + h);
+
+            GL.End();
+
+
+        }
+
+        public static int LoadTexture(string file)
+        {
+            Bitmap bitmap = new Bitmap(file);
+
+            int tex;
+            GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+
+            GL.GenTextures(1, out tex);
+            GL.BindTexture(TextureTarget.Texture2D, tex);
+
+            BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+                ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
+                OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+            bitmap.UnlockBits(data);
+
+
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+
+            return tex;
         }
 
         public static void AddModel(Model mdl)
