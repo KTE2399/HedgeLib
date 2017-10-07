@@ -59,7 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="S2HDSetXML.cs" />
+    <Compile Include="Editor.cs" />
+    <Compile Include="IRenderable.cs" />
     <Compile Include="SceneView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -69,7 +70,7 @@
     <Compile Include="EditorCache.cs" />
     <Compile Include="GameList.cs" />
     <Compile Include="TileSet.cs" />
-    <Compile Include="ViewportObject.cs" />
+    <Compile Include="ViewportSprite.cs" />
     <Compile Include="MainFrm.cs">
       <SubType>Form</SubType>
     </Compile>

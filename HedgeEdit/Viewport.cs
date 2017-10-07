@@ -16,16 +16,14 @@ namespace HedgeEdit
     public static class Viewport
     {
         // Variables/Constants
-        public static List<ViewportObject> Objects = new List<ViewportObject>();
+        public static List<IRenderable> Objects = new List<IRenderable>();
         public static Dictionary<string, int> Textures = new Dictionary<string, int>();
         public static Model DefaultCube;
 
         public static Vector3 CameraPos = Vector3.Zero, CameraRot = new Vector3(-90, 0, 0);
         public static float FOV = 40.0f, NearDistance = 0.1f, FarDistance = 1000f;
-        public static bool IsMovingCamera = false;
-
-        private static GLControl vp = null;
-        private static Point prevMousePos = Point.Empty;
+        
+        public static GLControl VP = null;
         private static Vector3 camUp = new Vector3(0, 1, 0),
             camForward = new Vector3(0, 0, -1);
 
@@ -35,7 +33,7 @@ namespace HedgeEdit
         // Methods
         public static void Init(GLControl viewport)
         {
-            vp = viewport;
+            VP = viewport;
             GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
@@ -55,7 +53,7 @@ namespace HedgeEdit
 
         public static void Render()
         {
-            if (vp == null)
+            if (VP == null)
                 throw new Exception("Cannot render viewport - viewport not yet initialized!");
 
             // Clear the background color
@@ -66,78 +64,13 @@ namespace HedgeEdit
             //int defaultID = Shaders.ShaderPrograms["ColorTest"]; // TODO: Make this more efficient
             //GL.UseProgram(defaultID);
 
-            // Update camera transform
-            var mouseState = Mouse.GetState();
-            if (IsMovingCamera && mouseState.RightButton == OpenTK.Input.ButtonState.Pressed)
-            {
-                var vpMousePos = vp.PointToClient(Cursor.Position);
-                float screenX = (float)vpMousePos.X / vp.Size.Width;
-                float screenY = (float)vpMousePos.Y / vp.Size.Height;
-
-                // Rotation
-                var mouseDifference = new Point(
-                    Cursor.Position.X - prevMousePos.X,
-                    Cursor.Position.Y - prevMousePos.Y);
-
-                CameraRot.X += mouseDifference.X * 0.1f;
-                CameraRot.Y -= mouseDifference.Y * 0.1f;
-
-                // Position
-                var keyState = Keyboard.GetState();
-                camSpeed = (keyState.IsKeyDown(Key.ShiftLeft) ||
-                    keyState.IsKeyDown(Key.ShiftRight)) ? fastSpeed : normalSpeed;
-
-                if (keyState.IsKeyDown(Key.W))
-                {
-                    CameraPos += camSpeed * camForward;
-                }
-                else if (keyState.IsKeyDown(Key.S))
-                {
-                    CameraPos -= camSpeed * camForward;
-                }
-
-                if (keyState.IsKeyDown(Key.A))
-                {
-                    CameraPos -= Vector3.Normalize(
-                        Vector3.Cross(camForward, camUp)) * camSpeed;
-                }
-                else if (keyState.IsKeyDown(Key.D))
-                {
-                    CameraPos += Vector3.Normalize(
-                        Vector3.Cross(camForward, camUp)) * camSpeed;
-                }
-
-                // Snap cursor to center of viewport
-                Cursor.Position =
-                    vp.PointToScreen(new Point(vp.Width / 2, vp.Height / 2));
-            }
-
-            // Update Transforms
-            float x = MathHelper.DegreesToRadians(CameraRot.X);
-            float y = MathHelper.DegreesToRadians(CameraRot.Y);
-            float yCos = (float)Math.Cos(y);
-
-            var front = new Vector3()
-            {
-                X = (float)Math.Cos(x) * yCos,
-                Y = (float)Math.Sin(y),
-                Z = (float)Math.Sin(x) * yCos
-            };
-
-            camForward = Vector3.Normalize(front);
-
-            var view = Matrix4.LookAt(CameraPos,
-                CameraPos + camForward, camUp);
-
-            prevMousePos = Cursor.Position;
-
             foreach (var obj in Objects)
             {
-                obj.Draw();
+                obj.Draw(0, 0, 1);
             }
 
             // Swap our buffers
-            vp.SwapBuffers();
+            VP.SwapBuffers();
         }
 
         public static void DrawTexturedRect(float x, float y, float width, float height, int texture)
@@ -148,10 +81,10 @@ namespace HedgeEdit
         
         public static void DrawTexturedRect(float x, float y, float width, float height)
         {
-            float w = (1f / vp.Width) * width;
-            float h = (1f / vp.Height) * height;
-            float x2 = (x / vp.Width) - 1f;
-            float y2 = ((y + height) / vp.Height) - 1f;
+            float w = (1f / VP.Width) * width;
+            float h = (1f / VP.Height) * height;
+            float x2 = (x / VP.Width) - 1f;
+            float y2 = ((y + height) / VP.Height) - 1f;
             GL.Begin(PrimitiveType.Quads);
 
             GL.TexCoord2(0, 1); GL.Vertex2(x2, -y2);
@@ -174,10 +107,10 @@ namespace HedgeEdit
             float texW, texH;
             GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out texW);
             GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out texH);
-            float w = (1f / vp.Width) * width;
-            float h = (1f / vp.Height) * height;
-            float x2 = (x / vp.Width) - 1f;
-            float y2 = ((y + height) / vp.Height) - 1f;
+            float w = (1f / VP.Width) * width;
+            float h = (1f / VP.Height) * height;
+            float x2 = (x / VP.Width) - 1f;
+            float y2 = ((y + height) / VP.Height) - 1f;
             float xCrop2 = (xCrop / texW);
             float yCrop2 = (yCrop / texH);
             float wCrop2 = (wCrop / texW);
@@ -225,7 +158,7 @@ namespace HedgeEdit
             return tex;
         }
 
-        public static void AddObject(ViewportObject obj)
+        public static void AddObject(IRenderable obj)
         {
             Objects.Add(obj);
         }
