@@ -34,7 +34,7 @@ namespace HedgeEdit
         public static void Init(GLControl viewport)
         {
             VP = viewport;
-            GL.Enable(EnableCap.DepthTest);
+            //GL.Enable(EnableCap.DepthTest);
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
@@ -66,7 +66,7 @@ namespace HedgeEdit
 
             foreach (var obj in Objects)
             {
-                obj.Draw(0, 0, 1);
+                obj.Draw(0, 0, 0, 0, 1);
             }
 
             // Swap our buffers
@@ -107,20 +107,63 @@ namespace HedgeEdit
             float texW, texH;
             GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out texW);
             GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out texH);
-            float w = (1f / VP.Width) * width;
-            float h = (1f / VP.Height) * height;
-            float x2 = (x / VP.Width) - 1f;
-            float y2 = ((y + height) / VP.Height) - 1f;
-            float xCrop2 = (xCrop / texW);
-            float yCrop2 = (yCrop / texH);
-            float wCrop2 = (wCrop / texW);
-            float hCrop2 = (hCrop / texH);
+            double w = (1f / VP.Width) * width;
+            double h = (1f / VP.Height) * height;
+            double x2 = (x / VP.Width) - 1f;
+            double y2 = ((y + height) / VP.Height) - 1f;
+            double xCrop2 = (xCrop / texW);
+            double yCrop2 = (yCrop / texH);
+            double wCrop2 = (wCrop / texW);
+            double hCrop2 = (hCrop / texH);
             GL.Begin(PrimitiveType.Quads);
 
             GL.TexCoord2(xCrop2, yCrop2 + hCrop2); GL.Vertex2(x2, -y2);
             GL.TexCoord2(xCrop2 + wCrop2, yCrop2 + hCrop2); GL.Vertex2(x2 + w, -y2);
             GL.TexCoord2(xCrop2 + wCrop2, yCrop2); GL.Vertex2(x2 + w, -y2 + h);
             GL.TexCoord2(xCrop2, yCrop2); GL.Vertex2(x2, -y2 + h);
+
+            GL.End();
+        }
+
+        public static void DrawTexturedRect(float x, float y, float width, float height, float xCrop, float yCrop, float wCrop, float hCrop, bool flipX, bool flipY, int texture)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, texture);
+            DrawTexturedRect(x, y, width, height, xCrop, yCrop, wCrop, hCrop, flipX, flipY);
+        }
+
+        /// <summary>
+        /// Draws a Rect with a texture that can be Cropped(Textures) and flipped
+        /// </summary>
+        /// <param name="x">The X Position of the Rect</param>
+        /// <param name="y">The Y Position of the Rect</param>
+        /// <param name="width">The Width of the Rect</param>
+        /// <param name="height">The Hight of the Rect</param>
+        /// <param name="xCrop">The X Position of the Texture</param>
+        /// <param name="yCrop">The Y Position of the Texture</param>
+        /// <param name="wCrop">The Width of the Texture</param>
+        /// <param name="hCrop">The Hight of the Texture</param>
+        /// <param name="flipX">Flip the Width of the Texture</param>
+        /// <param name="flipY">Flip the hight of the Texture</param>
+        public static void DrawTexturedRect(float x, float y, float width, float height, float xCrop, float yCrop, float wCrop, float hCrop, bool flipX, bool flipY)
+        {
+
+            float texW, texH;
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out texW);
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out texH);
+            double w = (1f / VP.Width) * width;
+            double h = (1f / VP.Height) * height;
+            double x2 = (x / VP.Width) - 1f;
+            double y2 = ((y + height) / VP.Height) - 1f;
+            double xCrop2 = (xCrop / texW);
+            double yCrop2 = (yCrop / texH);
+            double wCrop2 = (wCrop / texW);
+            double hCrop2 = (hCrop / texH);
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.TexCoord2(flipX ? (xCrop2 + wCrop2) : (xCrop2), flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2, -y2);
+            GL.TexCoord2(!flipX ? (xCrop2 + wCrop2) : (xCrop2), flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2 + w, -y2);
+            GL.TexCoord2(!flipX ? (xCrop2 + wCrop2) : (xCrop2), !flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2 + w, -y2 + h);
+            GL.TexCoord2(flipX ? (xCrop2 + wCrop2) : (xCrop2), !flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2, -y2 + h);
 
             GL.End();
         }

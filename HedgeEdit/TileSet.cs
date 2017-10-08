@@ -13,7 +13,7 @@ namespace HedgeEdit
     {
 
         public List<string> Textures = new List<string>();
-        public Tile[] Tiles = new Tile[4096];
+        public Dictionary<string, Tile> Tiles = new Dictionary<string, Tile>();
 
         public override void Load(Stream fileStream)
         {
@@ -29,7 +29,7 @@ namespace HedgeEdit
             foreach (var tileElem in tiles.Elements("tile"))
             {
                 var tile = new Tile();
-                int id = int.Parse(tileElem.Attribute("id").Value);
+                string id = tileElem.Attribute("id").Value;
                 if (tileElem.Attribute("opaque") != null)
                 {
                     tile.Opaque = bool.Parse(tileElem.Attribute("opaque").Value);
@@ -58,7 +58,8 @@ namespace HedgeEdit
                 {
                     tile.Delay = int.Parse(tileElem.Attribute("delay").Value);
                 }
-                Tiles[id] = tile;
+                if (!Tiles.ContainsKey(id))
+                    Tiles.Add(id, tile);
             }
         }
 

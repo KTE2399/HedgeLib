@@ -29,7 +29,7 @@ namespace HedgeEdit
             Texture = Viewport.LoadTexture(bitmap, filePath);
         }
 
-        public void Draw(float x, float y, float scale)
+        public void Draw(float x, float y, float xCam, float yCam, float scale)
         {
             if (Crop == Vector4.Zero)
             {

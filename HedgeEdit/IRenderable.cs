@@ -8,6 +8,6 @@ namespace HedgeEdit
 {
     public interface IRenderable
     {
-        void Draw(float x, float y, float scale);
+        void Draw(float x, float y, float xCam, float yCam, float scale);
     }
 }

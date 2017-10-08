@@ -15,13 +15,17 @@ namespace HedgeEdit
         public static bool IsMovingCamera;
         public float XOffset = 0f;
         public float YOffset = 0f;
+        public float Scale = 0f;
+        public float lastScroll = 0f;
         public Point prevMousePos = Point.Empty;
 
-        public void Draw(float x, float y, float scale)
+        public void Draw(float x, float y, float xCam, float yCam, float scale)
         {
 
             // Update camera transform
             var mouseState = Mouse.GetState();
+            Scale -= (lastScroll - mouseState.WheelPrecise) * 0.05f;
+            lastScroll = mouseState.WheelPrecise;
             if (IsMovingCamera && mouseState.RightButton == OpenTK.Input.ButtonState.Pressed)
             {
                 var vpMousePos = Viewport.VP.PointToClient(Cursor.Position);
@@ -45,7 +49,7 @@ namespace HedgeEdit
 
             foreach (var obj in Objects)
             {
-                obj.Draw(x + XOffset, y + YOffset, scale);
+                obj.Draw(x + XOffset, y + YOffset, XOffset, YOffset, scale + Scale);
             }
         }
 

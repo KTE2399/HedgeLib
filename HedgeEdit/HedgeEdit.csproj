@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="Editor.cs" />
     <Compile Include="IRenderable.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="SceneView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,6 +71,7 @@
     <Compile Include="EditorCache.cs" />
     <Compile Include="GameList.cs" />
     <Compile Include="TileSet.cs" />
+    <Compile Include="ViewPortMap.cs" />
     <Compile Include="ViewportSprite.cs" />
     <Compile Include="MainFrm.cs">
       <SubType>Form</SubType>
