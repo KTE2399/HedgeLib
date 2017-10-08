@@ -1,5 +1,8 @@
-﻿using System;
+﻿using HedgeLib;
+using OpenTK.Graphics.OpenGL;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,16 +14,37 @@ namespace HedgeEdit
 
         public Map Map;
         public TileSet TileSet;
-        public int[] Textures;
+        public S2HDSetData SetData;
+        public int[] TileTextures;
+        public Dictionary<AniGroup, int[]> SetTextures = new Dictionary<AniGroup, int[]>();
 
-        public ViewPortMap(Map map, TileSet tileSet)
+        public Dictionary<S2HDSetData.SetObject, AniGroup> SetAniLink = new Dictionary<S2HDSetData.SetObject, AniGroup>();
+
+        public ViewPortMap(Map map, TileSet tileSet, S2HDSetData setData)
         {
             Map = map;
             TileSet = tileSet;
-            Textures = new int[tileSet.Textures.Count];
-            for (int i = 0; i < Textures.Length; ++i)
+            SetData = setData;
+            TileTextures = new int[tileSet.Textures.Count];
+            for (int i = 0; i < TileTextures.Length; ++i)
             {
-                Textures[i] = Viewport.LoadTexture("TILESET" + tileSet.Textures[i] + ".png");
+                TileTextures[i] = Viewport.LoadTexture("TILESET" + tileSet.Textures[i] + ".png");
+            }
+            foreach (var setobj in setData.Objects)
+            {
+                string path = MainFrm.GetFullPathFromSonicOrcaPath(setobj.Key + "\\ANIGROUP.anigroup.xml");
+                if (File.Exists(path))
+                {
+                    var ani = new AniGroup();
+                    ani.Load(path);
+                    int[] textures = new int[ani.Textures.Count];
+                    for (int i = 0; i < textures.Length; ++i)
+                    {
+                        textures[i] = Viewport.LoadTexture(MainFrm.GetFullPathFromSonicOrcaPath(setobj.Key + ani.Textures[i] + ".png"));
+                    }
+                    SetTextures.Add(ani, textures);
+                    SetAniLink.Add(setobj, ani);
+                }
             }
         }
 
@@ -51,7 +75,7 @@ namespace HedgeEdit
                         float xx = i * 64 + x;
                         float yy = ii * 64 + y;
                         // The OpenGL Texture ID
-                        int texture = Textures[tile.Frames[0].Texture];
+                        int texture = TileTextures[tile.Frames[0].Texture];
                         // Prevents Rending Tiles out of view
                         if (xx + 64 + xCam < xCam || yy + 64 + yCam < yCam ||
                             xx - xCam > (Viewport.VP.Width * 2 / scale) - xCam || yy - yCam > (Viewport.VP.Height * 2 / scale) - yCam)
@@ -62,6 +86,21 @@ namespace HedgeEdit
                     ii++;
                 }
             }
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+            for (int i = 0; i < SetData.Objects.Count; ++i)
+            {
+                var obj = SetData.Objects[i];
+                if (SetAniLink.ContainsKey(obj))
+                {
+                    var ani = SetAniLink[obj];
+                    var ani2 = ani.Animations[0];
+                    var frame = ani2.Frames[0];
+                    int texture = SetTextures[ani][frame.Texture];
+                    Viewport.DrawTexturedRect((obj.X + x) * scale, (obj.Y + y) * scale, 64 * scale, 64 * scale,
+                        frame.X, frame.Y, frame.Width, frame.Height, texture);
+                }
+            }
+
         }
     }
 }

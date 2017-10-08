@@ -9,6 +9,9 @@ namespace HedgeEdit
 {
     public partial class MainFrm : Form
     {
+
+        public static string MainDirectoryPath = Path.GetFullPath("SONICORCA\\");
+
         // Variables/Constants
         public static SceneView SceneView
         {
@@ -52,6 +55,12 @@ namespace HedgeEdit
         }
 
         // Methods
+        public static string GetFullPathFromSonicOrcaPath(string key)
+        {
+            string parent = new DirectoryInfo(MainDirectoryPath).Parent.FullName;
+            return Path.Combine(parent, key.Replace('/', '\\'));
+        }
+
         public void RefreshGUI()
         {
             // Get the selected object(s), if any
@@ -183,23 +192,31 @@ namespace HedgeEdit
             editor.AddLevelObject(test);
 
 
-            if (File.Exists("TILESET.tileset.xml"))
+            string tileset = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/TILESET.tileset.xml");
+            string binding = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/BINDING.binding.xml");
+            string mapPath = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/MAP.map.xml");
+
+            if (File.Exists(tileset))
             {
                 var tileSet = new TileSet();
-                tileSet.Load("TILESET.tileset.xml");
+                tileSet.Load(tileset);
                 var frame = tileSet.Tiles["1371"].Frames[0];
                 //var tilesetTexture = new ViewportSprite("TILESET" + tileSet.Textures[0] + ".png");
                 //tilesetTexture.Position = new OpenTK.Vector2(300, 100);
                 //tilesetTexture.Size = new OpenTK.Vector2(200, 200);
                 //tilesetTexture.Crop = new OpenTK.Vector4(frame.X, frame.Y, 64, 64);
                 //editor.AddLevelObject(tilesetTexture);
-
-                if (File.Exists("MAP.map.xml"))
+                if (File.Exists(binding))
                 {
-                    var map = new Map();
-                    map.Load("MAP.map.xml");
-                    var vpMap = new ViewPortMap(map, tileSet);
-                    editor.AddLevelObject(vpMap);
+                    var set = new S2HDSetData();
+                    set.Load(binding);
+                    if (File.Exists(mapPath))
+                    {
+                        var map = new Map();
+                        map.Load(mapPath);
+                        var vpMap = new ViewPortMap(map, tileSet, set);
+                        editor.AddLevelObject(vpMap);
+                    }
                 }
             }
         }

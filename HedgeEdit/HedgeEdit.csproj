@@ -59,9 +59,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AniGroup.cs" />
     <Compile Include="Editor.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="S2HDSetData.cs" />
     <Compile Include="SceneView.cs">
       <SubType>Form</SubType>
     </Compile>

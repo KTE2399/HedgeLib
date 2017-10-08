@@ -68,9 +68,6 @@ namespace HedgeEdit
 
                 case DataTypes.LW:
                     return new LWSetData();
-
-                case DataTypes.S2HD:
-                    return new S2HDSetData();
             }
 
             throw new NotSupportedException(
