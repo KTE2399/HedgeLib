@@ -28,7 +28,7 @@ namespace HedgeEdit
             TileTextures = new int[tileSet.Textures.Count];
             for (int i = 0; i < TileTextures.Length; ++i)
             {
-                TileTextures[i] = Viewport.LoadTexture("TILESET" + tileSet.Textures[i] + ".png");
+                TileTextures[i] = Viewport.LoadTexture("SONICORCA/LEVELS/EHZ/TILESET" + tileSet.Textures[i] + ".png");
             }
             foreach (var setobj in setData.Objects)
             {
