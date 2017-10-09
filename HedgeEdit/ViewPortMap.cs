@@ -142,7 +142,8 @@ namespace HedgeEdit
                     if (x >= xx && x <= xx + frame.Width && y >= yy && y <= yy + frame.Height && mouseState.IsButtonDown(MouseButton.Left))
                     {
                         //Viewport.DrawTexturedRect(0, 0, 100, 100);
-                        MessageBox.Show(obj.Name);
+                        //MessageBox.Show(obj.Name);
+                        MainFrm.instance.UpdatePos(obj.X, obj.Y);
                     }
                     
                 }

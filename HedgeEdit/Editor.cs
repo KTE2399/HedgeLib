@@ -17,6 +17,7 @@ namespace HedgeEdit
         public float YOffset = 0f;
         public float Scale = 0f;
         public float lastScroll = 0f;
+        public S2HDSetData.SetObject SelectedObject;
         public Point prevMousePos = Point.Empty;
 
         public void Draw(float x, float y, float xCam, float yCam, float scale)
