@@ -23,7 +23,7 @@ namespace HedgeEdit
         {
 
             // Update camera transform
-            var mouseState = Mouse.GetState();
+            var mouseState = OpenTK.Input.Mouse.GetState();
             Scale -= (lastScroll - mouseState.WheelPrecise) * 0.05f;
             lastScroll = mouseState.WheelPrecise;
             if (IsMovingCamera && mouseState.RightButton == OpenTK.Input.ButtonState.Pressed)
@@ -37,8 +37,11 @@ namespace HedgeEdit
                     Cursor.Position.X - prevMousePos.X,
                     Cursor.Position.Y - prevMousePos.Y);
 
+                // IDK
                 XOffset += mouseDifference.X * 1f;
                 YOffset += mouseDifference.Y * 1f;
+                XOffset = (float)(Math.Round(XOffset / 2d) * 2d);
+                YOffset = (float)(Math.Round(YOffset / 2d) * 2d);
 
                 // Snap cursor to center of viewport
                 Cursor.Position =
@@ -46,16 +49,24 @@ namespace HedgeEdit
             }
 
             prevMousePos = Cursor.Position;
-
+            var vpCursorPos = Viewport.VP.PointToClient(Cursor.Position);
             foreach (var obj in Objects)
             {
+                // Render
                 obj.Draw(x + XOffset, y + YOffset, XOffset, YOffset, scale + Scale);
+                // Mouse
+                obj.Mouse((((vpCursorPos.X * 2) + x) / (scale + Scale)) - XOffset,
+                          ((vpCursorPos.Y * 2) + y) / (scale + Scale) - YOffset, scale + Scale, mouseState);
             }
         }
 
         public void AddLevelObject(IRenderable obj)
         {
             Objects.Add(obj);
+        }
+
+        public void Mouse(float x, float y, float scale, MouseState mouseState)
+        {
         }
     }
 }

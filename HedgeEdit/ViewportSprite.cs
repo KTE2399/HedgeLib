@@ -3,6 +3,7 @@ using OpenTK;
 using OpenTK.Graphics.ES30;
 using System;
 using System.Drawing;
+using OpenTK.Input;
 
 namespace HedgeEdit
 {
@@ -39,6 +40,10 @@ namespace HedgeEdit
             {
                 Viewport.DrawTexturedRect(Position.X + x, Position.Y + y, Size.X, Size.Y, Crop.X, Crop.Y, Crop.Z, Crop.W, Texture);
             }
+        }
+
+        public void Mouse(float x, float y, float scale, MouseState mouseState)
+        {
         }
     }
 }

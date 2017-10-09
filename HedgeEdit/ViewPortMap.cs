@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OpenTK.Input;
+using System.Windows.Forms;
 
 namespace HedgeEdit
 {
@@ -50,6 +52,7 @@ namespace HedgeEdit
 
         public void Draw(float x, float y, float xCam, float yCam, float scale)
         {
+ 
             foreach (var layer in Map.Layers)
             {
                 int ii = 0;
@@ -96,11 +99,45 @@ namespace HedgeEdit
                     var ani2 = ani.Animations[0];
                     var frame = ani2.Frames[0];
                     int texture = SetTextures[ani][frame.Texture];
-                    Viewport.DrawTexturedRect((obj.X + x) * scale, (obj.Y + y) * scale, 64 * scale, 64 * scale,
+                    float xx = (obj.X - frame.Width / 2 + x) * scale;
+                    float yy = (obj.Y - frame.Height / 2 + y) * scale;
+
+                    Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
                         frame.X, frame.Y, frame.Width, frame.Height, texture);
+
+                    // Border
+                    GL.BindTexture(TextureTarget.Texture2D, 0);
+                    Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, 2);
+                    Viewport.DrawTexturedRect(xx, yy + frame.Height * scale, frame.Width * scale, 2);
+                    Viewport.DrawTexturedRect(xx, yy, 2, frame.Height * scale);
+                    Viewport.DrawTexturedRect(xx + frame.Width * scale, yy, 2, frame.Height * scale);
                 }
             }
 
+        }
+
+        public void Mouse(float x, float y, float scale, MouseState mouseState)
+        {
+            for (int i = 0; i < SetData.Objects.Count; ++i)
+            {
+                var obj = SetData.Objects[i];
+                if (SetAniLink.ContainsKey(obj))
+                {
+                    var ani = SetAniLink[obj];
+                    var ani2 = ani.Animations[0];
+                    var frame = ani2.Frames[0];
+                    int texture = SetTextures[ani][frame.Texture];
+                    float xx = (obj.X - (frame.Width / 2));
+                    float yy = (obj.Y - (frame.Height / 2));
+
+                    if (x >= xx && x <= xx + frame.Width && y >= yy && y <= yy + frame.Height && mouseState.IsButtonDown(MouseButton.Left))
+                    {
+                        //Viewport.DrawTexturedRect(0, 0, 100, 100);
+                        MessageBox.Show(obj.Name);
+                    }
+                    
+                }
+            }
         }
     }
 }
