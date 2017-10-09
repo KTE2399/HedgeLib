@@ -111,72 +111,55 @@ namespace HedgeEdit
                     var ani2 = ani.Animations[0];
                     bool fliph = false;
                     bool flipv = false;
-                    // TODO: Mode to another method
-                    // Rotated Spring
-                    if (obj.Key.Contains("SPRING"))
-                    {
-                        if (obj.ExtraData.ContainsKey("Direction"))
-                        {
-                            string dir = obj.ExtraData["Direction"];
-                            if (dir == "UpRight")
-                            {
-                                if (obj.ExtraData.ContainsKey("Strength"))
-                                    ani2 = ani.Animations[4];
-                                else
-                                    ani2 = ani.Animations[6];
-                            }
-                            else if (dir == "UpLeft")
-                            {
-                                if (obj.ExtraData.ContainsKey("Strength"))
-                                    ani2 = ani.Animations[4];
-                                else
-                                    ani2 = ani.Animations[6];
-                                fliph = true;
-                            }
-                            else if (dir == "Down")
-                            {
-                                if (obj.ExtraData.ContainsKey("Strength"))
-                                    ani2 = ani.Animations[0];
-                                else
-                                    ani2 = ani.Animations[2];
-                                flipv = true;
-                            }
-                            else if (dir == "Down")
-                            {
-                                if (obj.ExtraData.ContainsKey("Strength"))
-                                    ani2 = ani.Animations[0];
-                                else
-                                    ani2 = ani.Animations[2];
-                            }
-                        }
-                        else if(obj.ExtraData.ContainsKey("Strength"))
-                        {
-                            if (obj.ExtraData.ContainsKey("Strength"))
-                                ani2 = ani.Animations[0];
-                            else
-                                ani2 = ani.Animations[2];
-                        }
-                    }
-                    if (obj.Key.Contains("SPIKES"))
-                    {
-                        if (obj.ExtraData.ContainsKey("Direction"))
-                        {
-                            string dir = obj.ExtraData["Direction"];
-                            if (dir == "Down")
-                            {
-                                flipv = true;
-                            }
-                        }
-                    }
+
+                    ObjectRenderAttitudes.Update(ref obj, ref ani, ref ani2, ref fliph, ref flipv);
+
                     var frame = ani2.Frames[0];
                     int texture = SetTextures[ani][frame.Texture];
                     float xx = (obj.X - frame.Width / 2 + x) * scale;
                     float yy = (obj.Y - frame.Height / 2 + y) * scale;
-
+                    
                     count++;
 
                     Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
                         frame.X, frame.Y, frame.Width, frame.Height, fliph, flipv, texture);
+
+                    // Extra Frames
+                    if (obj.Key.Contains("MONITOR"))
+                    {
+                        string contents = obj.ExtraData["Contents"];
+                        var prevFrame = ani2.Frames[0];
+                        xx = (obj.X - prevFrame.Width / 2 + x) * scale;
+                        yy = (obj.Y - prevFrame.Height / 2 + y) * scale;
+                        // 6 = Life
+
+                            frame = ani.Animations[7].Frames[0];
+                        if (contents == "Life")
+                            frame = ani.Animations[5].Frames[0];
+                        if (contents == "Robotnik")
+                            frame = ani.Animations[7].Frames[0];
+                        if (contents == "Ring")
+                            frame = ani.Animations[8].Frames[0];
+                        if (contents == "SpeedShoes")
+                            frame = ani.Animations[9].Frames[0];
+                        if (contents == "Barrier")
+                            frame = ani.Animations[11].Frames[0];
+                        if (contents == "Invincibility")
+                            frame = ani.Animations[12].Frames[0];
+                        if (contents == "Swap")
+                            frame = ani.Animations[13].Frames[0];
+                        if (contents == "Random")
+                            frame = ani.Animations[14].Frames[0];
+
+                        xx = (obj.X + 4 - frame.Width / 2 + x) * scale;
+                        yy = (obj.Y - 10 - frame.Height / 2 + y) * scale;
+                        texture = SetTextures[ani][frame.Texture];
+                        Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
+                            frame.X, frame.Y, frame.Width, frame.Height, fliph, flipv, texture);
+                        frame = prevFrame;
+                        xx = (obj.X - frame.Width / 2 + x) * scale;
+                        yy = (obj.Y - frame.Height / 2 + y) * scale;
+                    }
 
                     // Border
                     GL.BindTexture(TextureTarget.Texture2D, 0);

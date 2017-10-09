@@ -38,13 +38,9 @@ namespace HedgeEdit
                 if (def1Elem.Element("Behaviour") != null)
                 {
                     var behElem = def1Elem.Element("Behaviour");
-                    if (behElem.Element("Direction") != null)
+                    foreach (var elem in behElem.Elements())
                     {
-                        setObj.ExtraData.Add("Direction", behElem.Element("Direction").Value);
-                    }
-                    if (behElem.Element("Strength") != null)
-                    {
-                        setObj.ExtraData.Add("Strength", behElem.Element("Strength").Value);
+                        setObj.ExtraData.Add(elem.Name.ToString(), elem.Value);
                     }
                 }
 

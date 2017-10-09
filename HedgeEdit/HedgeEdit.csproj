@@ -64,6 +64,7 @@
     <Compile Include="Font.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="ObjectRenderAttitudes.cs" />
     <Compile Include="S2HDSetData.cs" />
     <Compile Include="SceneView.cs">
       <SubType>Form</SubType>
