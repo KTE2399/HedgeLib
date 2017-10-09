@@ -109,6 +109,65 @@ namespace HedgeEdit
                 {
                     var ani = SetAniLink[obj];
                     var ani2 = ani.Animations[0];
+                    bool fliph = false;
+                    bool flipv = false;
+                    // TODO: Mode to another method
+                    // Rotated Spring
+                    if (obj.Key.Contains("SPRING"))
+                    {
+                        if (obj.ExtraData.ContainsKey("Direction"))
+                        {
+                            string dir = obj.ExtraData["Direction"];
+                            if (dir == "UpRight")
+                            {
+                                if (obj.ExtraData.ContainsKey("Strength"))
+                                    ani2 = ani.Animations[4];
+                                else
+                                    ani2 = ani.Animations[6];
+                            }
+                            else if (dir == "UpLeft")
+                            {
+                                if (obj.ExtraData.ContainsKey("Strength"))
+                                    ani2 = ani.Animations[4];
+                                else
+                                    ani2 = ani.Animations[6];
+                                fliph = true;
+                            }
+                            else if (dir == "Down")
+                            {
+                                if (obj.ExtraData.ContainsKey("Strength"))
+                                    ani2 = ani.Animations[0];
+                                else
+                                    ani2 = ani.Animations[2];
+                                flipv = true;
+                            }
+                            else if (dir == "Down")
+                            {
+                                if (obj.ExtraData.ContainsKey("Strength"))
+                                    ani2 = ani.Animations[0];
+                                else
+                                    ani2 = ani.Animations[2];
+                            }
+                        }
+                        else if(obj.ExtraData.ContainsKey("Strength"))
+                        {
+                            if (obj.ExtraData.ContainsKey("Strength"))
+                                ani2 = ani.Animations[0];
+                            else
+                                ani2 = ani.Animations[2];
+                        }
+                    }
+                    if (obj.Key.Contains("SPIKES"))
+                    {
+                        if (obj.ExtraData.ContainsKey("Direction"))
+                        {
+                            string dir = obj.ExtraData["Direction"];
+                            if (dir == "Down")
+                            {
+                                flipv = true;
+                            }
+                        }
+                    }
                     var frame = ani2.Frames[0];
                     int texture = SetTextures[ani][frame.Texture];
                     float xx = (obj.X - frame.Width / 2 + x) * scale;
@@ -117,7 +176,7 @@ namespace HedgeEdit
                     count++;
 
                     Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
-                        frame.X, frame.Y, frame.Width, frame.Height, texture);
+                        frame.X, frame.Y, frame.Width, frame.Height, fliph, flipv, texture);
 
                     // Border
                     GL.BindTexture(TextureTarget.Texture2D, 0);

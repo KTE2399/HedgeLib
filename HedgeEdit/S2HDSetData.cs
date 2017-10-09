@@ -26,15 +26,28 @@ namespace HedgeEdit
 
             foreach (var def1Elem in tiles.Elements("Definition"))
             {
-                var def2Elem = def1Elem.Elements().First();
+                var commonElem = def1Elem.Element("Common");
                 var setObj = new SetObject();
-                setObj.Group = def2Elem.Name.LocalName;
-                setObj.Key = def2Elem.Element("Key").Value;
-                setObj.UID = def2Elem.Element("Uid").Value;
-                setObj.Name = def2Elem.Element("Name").Value;
-                var posElem = def2Elem.Element("Position");
+                setObj.Group = commonElem.Name.LocalName;
+                setObj.Key = commonElem.Element("Key").Value;
+                setObj.UID = commonElem.Element("Uid").Value;
+                setObj.Name = commonElem.Element("Name").Value;
+                var posElem = commonElem.Element("Position");
                 setObj.X = int.Parse(posElem.Attribute("X").Value);
                 setObj.Y = int.Parse(posElem.Attribute("Y").Value);
+                if (def1Elem.Element("Behaviour") != null)
+                {
+                    var behElem = def1Elem.Element("Behaviour");
+                    if (behElem.Element("Direction") != null)
+                    {
+                        setObj.ExtraData.Add("Direction", behElem.Element("Direction").Value);
+                    }
+                    if (behElem.Element("Strength") != null)
+                    {
+                        setObj.ExtraData.Add("Strength", behElem.Element("Strength").Value);
+                    }
+                }
+
                 Objects.Add(setObj);
             }
         }
@@ -48,6 +61,7 @@ namespace HedgeEdit
             public string Name;
             public int X;
             public int Y;
+            public Dictionary<string, string> ExtraData = new Dictionary<string, string>();
         }
 
     }
