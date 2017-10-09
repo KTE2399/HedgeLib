@@ -21,6 +21,9 @@ namespace HedgeEdit
         public int FontTextureID;
         public int[] TileTextures;
         public Dictionary<AniGroup, int[]> SetTextures = new Dictionary<AniGroup, int[]>();
+        public float? Dx = 0;
+        public float? Dy = 0;
+
 
         public Dictionary<S2HDSetData.SetObject, AniGroup> SetAniLink = new Dictionary<S2HDSetData.SetObject, AniGroup>();
 
@@ -97,7 +100,7 @@ namespace HedgeEdit
 
             GL.BindTexture(TextureTarget.Texture2D, FontTextureID);
             Font.Draw($"RENDERING: {count} TILES", 10, 10, 1);
-            
+            count = 0;
             GL.BindTexture(TextureTarget.Texture2D, 0);
             for (int i = 0; i < SetData.Objects.Count; ++i)
             {
@@ -111,6 +114,8 @@ namespace HedgeEdit
                     float xx = (obj.X - frame.Width / 2 + x) * scale;
                     float yy = (obj.Y - frame.Height / 2 + y) * scale;
 
+                    count++;
+
                     Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
                         frame.X, frame.Y, frame.Width, frame.Height, texture);
 
@@ -122,30 +127,56 @@ namespace HedgeEdit
                     Viewport.DrawTexturedRect(xx + frame.Width * scale, yy, 2, frame.Height * scale);
                 }
             }
-
+            GL.BindTexture(TextureTarget.Texture2D, FontTextureID);
+            Font.Draw($"RENDERING: {count} OBJECTS", 10, 60, 1);
+            if (Editor.Instance.SelectedObject != null)
+            {
+                string s = "Selected Object: " + Editor.Instance.SelectedObject.Name;
+                Font.Draw(s.ToUpper(), 10, 110, 1);
+            }
         }
 
         public void Mouse(float x, float y, float scale, MouseState mouseState)
         {
-            for (int i = 0; i < SetData.Objects.Count; ++i)
+            if (Dx != null && Dy != null && !mouseState.IsButtonDown(MouseButton.Left))
             {
-                var obj = SetData.Objects[i];
-                if (SetAniLink.ContainsKey(obj))
+                Dx = Dy = null;
+            }
+            else if (Editor.Instance.SelectedObject != null && Dx != null && Dy != null)
+            {
+                var obj = Editor.Instance.SelectedObject;
+                obj.X = (int)(x + Dx);
+                obj.Y = (int)(y + Dy);
+                MainFrm.Instance.UpdatePos(obj.X, obj.Y);
+            }
+            else
+            {
+                for (int i = 0; i < SetData.Objects.Count; ++i)
                 {
-                    var ani = SetAniLink[obj];
-                    var ani2 = ani.Animations[0];
-                    var frame = ani2.Frames[0];
-                    int texture = SetTextures[ani][frame.Texture];
-                    float xx = (obj.X - (frame.Width / 2));
-                    float yy = (obj.Y - (frame.Height / 2));
-
-                    if (x >= xx && x <= xx + frame.Width && y >= yy && y <= yy + frame.Height && mouseState.IsButtonDown(MouseButton.Left))
+                    var obj = SetData.Objects[i];
+                    if (SetAniLink.ContainsKey(obj))
                     {
-                        //Viewport.DrawTexturedRect(0, 0, 100, 100);
-                        //MessageBox.Show(obj.Name);
-                        MainFrm.instance.UpdatePos(obj.X, obj.Y);
+                        var ani = SetAniLink[obj];
+                        var ani2 = ani.Animations[0];
+                        var frame = ani2.Frames[0];
+                        int texture = SetTextures[ani][frame.Texture];
+                        float xx = (obj.X - (frame.Width / 2));
+                        float yy = (obj.Y - (frame.Height / 2));
+
+                        if (x >= xx && x <= xx + frame.Width && y >= yy && y <= yy + frame.Height && mouseState.IsButtonDown(MouseButton.Left))
+                        {
+                            //Viewport.DrawTexturedRect(0, 0, 100, 100);
+                            //MessageBox.Show(obj.Name);
+                            Editor.Instance.SelectedObject = obj;
+                            if (Dx == null && Dy == null)
+                            {
+                                Dx = obj.X - x;
+                                Dy = obj.Y - y;
+                            }
+                            break;
+                        }
+
                     }
-                    
                 }
             }
         }

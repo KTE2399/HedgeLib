@@ -11,7 +11,7 @@ namespace HedgeEdit
     {
 
         public static string MainDirectoryPath = Path.GetFullPath("SONICORCA\\");
-        public static MainFrm instance;
+        public static MainFrm Instance;
         // Variables/Constants
         public static SceneView SceneView
         {
@@ -179,7 +179,7 @@ namespace HedgeEdit
 
         private void MainFrm_Load(object sender, EventArgs e)
         {
-            instance = this;
+            Instance = this;
             //GameList.Load(Program.StartupPath);
             Viewport.Init(viewport);
             var editor = new Editor();

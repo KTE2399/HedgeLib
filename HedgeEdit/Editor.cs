@@ -13,12 +13,18 @@ namespace HedgeEdit
     {
         public static List<IRenderable> Objects = new List<IRenderable>();
         public static bool IsMovingCamera;
+        public static Editor Instance;
+        public S2HDSetData.SetObject SelectedObject;
         public float XOffset = 0f;
         public float YOffset = 0f;
         public float Scale = 0f;
         public float lastScroll = 0f;
-        public S2HDSetData.SetObject SelectedObject;
         public Point prevMousePos = Point.Empty;
+
+        public Editor()
+        {
+            Instance = this;
+        }
 
         public void Draw(float x, float y, float xCam, float yCam, float scale)
         {
