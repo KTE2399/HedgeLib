@@ -17,16 +17,20 @@ namespace HedgeEdit
         public Map Map;
         public TileSet TileSet;
         public S2HDSetData SetData;
+        public Font Font;
+        public int FontTextureID;
         public int[] TileTextures;
         public Dictionary<AniGroup, int[]> SetTextures = new Dictionary<AniGroup, int[]>();
 
         public Dictionary<S2HDSetData.SetObject, AniGroup> SetAniLink = new Dictionary<S2HDSetData.SetObject, AniGroup>();
 
-        public ViewPortMap(Map map, TileSet tileSet, S2HDSetData setData)
+        public ViewPortMap(Map map, TileSet tileSet, S2HDSetData setData, Font font)
         {
             Map = map;
             TileSet = tileSet;
             SetData = setData;
+            Font = font;
+            FontTextureID = Viewport.LoadTexture(font.Textures[1]);
             TileTextures = new int[tileSet.Textures.Count];
             for (int i = 0; i < TileTextures.Length; ++i)
             {
@@ -52,7 +56,7 @@ namespace HedgeEdit
 
         public void Draw(float x, float y, float xCam, float yCam, float scale)
         {
- 
+            int count = 0;
             foreach (var layer in Map.Layers)
             {
                 int ii = 0;
@@ -83,12 +87,17 @@ namespace HedgeEdit
                         if (xx + 64 + xCam < xCam || yy + 64 + yCam < yCam ||
                             xx - xCam > (Viewport.VP.Width * 2 / scale) - xCam || yy - yCam > (Viewport.VP.Height * 2 / scale) - yCam)
                             continue;
+                        count++;
                         // Draws the Tile.
                         Viewport.DrawTexturedRect(xx * scale, yy * scale, 64 * scale, 64 * scale, tile.Frames[0].X, tile.Frames[0].Y, 64, 64, flipX, flipY, texture);
                     }
                     ii++;
                 }
             }
+
+            GL.BindTexture(TextureTarget.Texture2D, FontTextureID);
+            Font.Draw($"RENDERING: {count} TILES", 10, 10, 1);
+            
             GL.BindTexture(TextureTarget.Texture2D, 0);
             for (int i = 0; i < SetData.Objects.Count; ++i)
             {

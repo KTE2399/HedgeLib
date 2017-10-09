@@ -61,6 +61,7 @@
   <ItemGroup>
     <Compile Include="AniGroup.cs" />
     <Compile Include="Editor.cs" />
+    <Compile Include="Font.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="S2HDSetData.cs" />

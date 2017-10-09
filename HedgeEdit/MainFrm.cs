@@ -195,6 +195,8 @@ namespace HedgeEdit
             string tileset = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/TILESET.tileset.xml");
             string binding = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/BINDING.binding.xml");
             string mapPath = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/MAP.map.xml");
+            var font = new Font();
+            font.LoadFont("HUD");
 
             if (File.Exists(tileset))
             {
@@ -214,7 +216,7 @@ namespace HedgeEdit
                     {
                         var map = new Map();
                         map.Load(mapPath);
-                        var vpMap = new ViewPortMap(map, tileSet, set);
+                        var vpMap = new ViewPortMap(map, tileSet, set, font);
                         editor.AddLevelObject(vpMap);
                     }
                 }
