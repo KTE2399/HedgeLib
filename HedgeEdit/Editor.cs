@@ -15,6 +15,9 @@ namespace HedgeEdit
         public static bool IsMovingCamera;
         public static Editor Instance;
         public S2HDSetData.SetObject SelectedObject;
+        public S2HDSetData.SetObject LastSelectedObject;
+        public int LastX;
+        public int LastY;
         public float XOffset = 0f;
         public float YOffset = 0f;
         public float Scale = 0f;

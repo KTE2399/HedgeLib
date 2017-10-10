@@ -146,7 +146,11 @@ namespace HedgeEdit
             {
                 // Undo Changes
                 case Keys.Control | Keys.Z:
-                    undoMenuItem.PerformClick();
+                    if (Editor.Instance.LastSelectedObject == null)
+                        return false;
+
+                    Editor.Instance.LastSelectedObject.X = Editor.Instance.LastX;
+                    Editor.Instance.LastSelectedObject.Y = Editor.Instance.LastY;
                     return true;
 
                 // Cut Selected Object(s)

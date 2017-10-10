@@ -175,6 +175,7 @@ namespace HedgeEdit
             {
                 string s = "Selected Object: " + Editor.Instance.SelectedObject.Name;
                 Font.Draw(s.ToUpper(), 10, 110, 1);
+                MainFrm.Instance.UpdatePos(Editor.Instance.SelectedObject.X, Editor.Instance.SelectedObject.Y);
             }
         }
 
@@ -189,7 +190,6 @@ namespace HedgeEdit
                 var obj = Editor.Instance.SelectedObject;
                 obj.X = (int)(x + Dx);
                 obj.Y = (int)(y + Dy);
-                MainFrm.Instance.UpdatePos(obj.X, obj.Y);
             }
             else
             {
@@ -210,6 +210,9 @@ namespace HedgeEdit
                             //Viewport.DrawTexturedRect(0, 0, 100, 100);
                             //MessageBox.Show(obj.Name);
                             Editor.Instance.SelectedObject = obj;
+                            Editor.Instance.LastSelectedObject = obj;
+                            Editor.Instance.LastX = obj.X;
+                            Editor.Instance.LastY = obj.Y;
                             if (Dx == null && Dy == null)
                             {
                                 Dx = obj.X - x;
