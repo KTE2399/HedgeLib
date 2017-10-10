@@ -12,6 +12,7 @@ namespace HedgeEdit
 
         public static string MainDirectoryPath = Path.GetFullPath("SONICORCA\\");
         public static MainFrm Instance;
+        public static S2HDSetData SetData;
         // Variables/Constants
         public static SceneView SceneView
         {
@@ -216,6 +217,7 @@ namespace HedgeEdit
                 {
                     var set = new S2HDSetData();
                     set.Load(binding);
+                    SetData = set;
                     if (File.Exists(mapPath))
                     {
                         var map = new Map();
@@ -337,6 +339,7 @@ namespace HedgeEdit
         private void SaveMenuItem_Click(object sender, EventArgs e)
         {
             // TODO
+            SetData.Save("BINDING.binding.xml", true);
         }
 
         private void SaveAsMenuItem_Click(object sender, EventArgs e)

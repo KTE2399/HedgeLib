@@ -15,7 +15,7 @@ namespace HedgeEdit
             {
                 if (sobj.ExtraData.ContainsKey("Direction"))
                 {
-                    string dir = sobj.ExtraData["Direction"];
+                    string dir = (string)sobj.ExtraData["Direction"];
                     if (dir == "UpRight")
                     {
                         if (sobj.ExtraData.ContainsKey("Strength"))
@@ -58,7 +58,7 @@ namespace HedgeEdit
             {
                 if (sobj.ExtraData.ContainsKey("Direction"))
                 {
-                    string dir = sobj.ExtraData["Direction"];
+                    string dir = (string)sobj.ExtraData["Direction"];
                     if (dir == "Down")
                     {
                         flipv = true;

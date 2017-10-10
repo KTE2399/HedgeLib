@@ -127,7 +127,7 @@ namespace HedgeEdit
                     // Extra Frames
                     if (obj.Key.Contains("MONITOR"))
                     {
-                        string contents = obj.ExtraData["Contents"];
+                        string contents = (string)obj.ExtraData["Contents"];
                         var prevFrame = ani2.Frames[0];
                         xx = (obj.X - prevFrame.Width / 2 + x) * scale;
                         yy = (obj.Y - prevFrame.Height / 2 + y) * scale;
