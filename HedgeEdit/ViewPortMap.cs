@@ -210,9 +210,9 @@ namespace HedgeEdit
                             //Viewport.DrawTexturedRect(0, 0, 100, 100);
                             //MessageBox.Show(obj.Name);
                             Editor.Instance.SelectedObject = obj;
-                            Editor.Instance.LastSelectedObject = obj;
-                            Editor.Instance.LastX = obj.X;
-                            Editor.Instance.LastY = obj.Y;
+                            Editor.Instance.LastSelectedObjects.Add(obj);
+                            Editor.Instance.LastX.Add(obj.X);
+                            Editor.Instance.LastY.Add(obj.Y);
                             if (Dx == null && Dy == null)
                             {
                                 Dx = obj.X - x;

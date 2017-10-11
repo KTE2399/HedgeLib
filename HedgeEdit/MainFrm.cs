@@ -146,11 +146,14 @@ namespace HedgeEdit
             {
                 // Undo Changes
                 case Keys.Control | Keys.Z:
-                    if (Editor.Instance.LastSelectedObject == null)
+                    if (Editor.Instance.LastSelectedObjects.Count < 1)
                         return false;
 
-                    Editor.Instance.LastSelectedObject.X = Editor.Instance.LastX;
-                    Editor.Instance.LastSelectedObject.Y = Editor.Instance.LastY;
+                    Editor.Instance.LastSelectedObjects[Editor.Instance.LastSelectedObjects.Count -1].X = Editor.Instance.LastX[Editor.Instance.LastSelectedObjects.Count - 1];
+                    Editor.Instance.LastSelectedObjects[Editor.Instance.LastSelectedObjects.Count - 1].Y = Editor.Instance.LastY[Editor.Instance.LastSelectedObjects.Count - 1];
+                    Editor.Instance.LastSelectedObjects.RemoveAt(Editor.Instance.LastSelectedObjects.Count - 1);
+                    Editor.Instance.LastX.RemoveAt(Editor.Instance.LastX.Count - 1);
+                    Editor.Instance.LastY.RemoveAt(Editor.Instance.LastY.Count - 1);
                     return true;
 
                 // Cut Selected Object(s)
