@@ -16,50 +16,23 @@ namespace HedgeEdit
 
         public Map Map;
         public TileSet TileSet;
-        public S2HDSetData SetData;
-        public Font Font;
         public int FontTextureID;
         public int[] TileTextures;
-        public Dictionary<AniGroup, int[]> SetTextures = new Dictionary<AniGroup, int[]>();
-        public float? Dx = 0;
-        public float? Dy = 0;
 
-
-        public Dictionary<S2HDSetData.SetObject, AniGroup> SetAniLink = new Dictionary<S2HDSetData.SetObject, AniGroup>();
-
-        public ViewPortMap(Map map, TileSet tileSet, S2HDSetData setData, Font font)
+        public ViewPortMap(Map map, TileSet tileSet)
         {
             Map = map;
             TileSet = tileSet;
-            SetData = setData;
-            Font = font;
-            FontTextureID = Viewport.LoadTexture(font.Textures[1]);
+            FontTextureID = Viewport.LoadTexture(Editor.Instance.Font.Textures[1]);
             TileTextures = new int[tileSet.Textures.Count];
             for (int i = 0; i < TileTextures.Length; ++i)
             {
                 TileTextures[i] = Viewport.LoadTexture("SONICORCA/LEVELS/EHZ/TILESET" + tileSet.Textures[i] + ".png");
             }
-            foreach (var setobj in setData.Objects)
-            {
-                string path = MainFrm.GetFullPathFromSonicOrcaPath(setobj.Key + "\\ANIGROUP.anigroup.xml");
-                if (File.Exists(path))
-                {
-                    var ani = new AniGroup();
-                    ani.Load(path);
-                    int[] textures = new int[ani.Textures.Count];
-                    for (int i = 0; i < textures.Length; ++i)
-                    {
-                        textures[i] = Viewport.LoadTexture(MainFrm.GetFullPathFromSonicOrcaPath(setobj.Key + ani.Textures[i] + ".png"));
-                    }
-                    SetTextures.Add(ani, textures);
-                    SetAniLink.Add(setobj, ani);
-                }
-            }
         }
 
         public void Draw(float x, float y, float xCam, float yCam, float scale)
         {
-            int count = 0;
             foreach (var layer in Map.Layers)
             {
                 int ii = 0;
@@ -90,24 +63,19 @@ namespace HedgeEdit
                         if (xx + 64 + xCam < xCam || yy + 64 + yCam < yCam ||
                             xx - xCam > (Viewport.VP.Width * 2 / scale) - xCam || yy - yCam > (Viewport.VP.Height * 2 / scale) - yCam)
                             continue;
-                        count++;
                         // Draws the Tile.
                         Viewport.DrawTexturedRect(xx * scale, yy * scale, 64 * scale, 64 * scale, tile.Frames[0].X, tile.Frames[0].Y, 64, 64, flipX, flipY, texture);
                     }
                     ii++;
                 }
             }
-
-            GL.BindTexture(TextureTarget.Texture2D, FontTextureID);
-            Font.Draw($"RENDERING: {count} TILES", 10, 10, 1);
-            count = 0;
-            GL.BindTexture(TextureTarget.Texture2D, 0);
-            for (int i = 0; i < SetData.Objects.Count; ++i)
+            
+            for (int i = 0; i < Editor.Instance.SetData.Objects.Count; ++i)
             {
-                var obj = SetData.Objects[i];
-                if (SetAniLink.ContainsKey(obj))
+                var obj = Editor.Instance.SetData.Objects[i];
+                if (Editor.Instance.SetAniLink.ContainsKey(obj))
                 {
-                    var ani = SetAniLink[obj];
+                    var ani = Editor.Instance.SetAniLink[obj];
                     var ani2 = ani.Animations[0];
                     bool fliph = false;
                     bool flipv = false;
@@ -115,15 +83,19 @@ namespace HedgeEdit
                     ObjectRenderAttitudes.Update(ref obj, ref ani, ref ani2, ref fliph, ref flipv);
 
                     var frame = ani2.Frames[0];
-                    int texture = SetTextures[ani][frame.Texture];
+                    int texture = Editor.Instance.SetTextures[ani][frame.Texture];
                     float xx = (obj.X - frame.Width / 2 + x) * scale;
                     float yy = (obj.Y - frame.Height / 2 + y) * scale;
-                    
-                    count++;
+
+                    // Prevents Rending Tiles out of view
+                    if (xx / scale + frame.Width + xCam < xCam || yy / scale + frame.Height + yCam < yCam ||
+                        xx / scale - xCam > (Viewport.VP.Width * 2 / scale) - xCam || yy / scale - yCam > (Viewport.VP.Height * 2 / scale) - yCam)
+                        continue;
+
 
                     Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
                         frame.X, frame.Y, frame.Width, frame.Height, fliph, flipv, texture);
-
+                    
                     // Extra Frames
                     if (obj.Key.Contains("MONITOR"))
                     {
@@ -153,74 +125,28 @@ namespace HedgeEdit
 
                         xx = (obj.X + 4 - frame.Width / 2 + x) * scale;
                         yy = (obj.Y - 10 - frame.Height / 2 + y) * scale;
-                        texture = SetTextures[ani][frame.Texture];
+                        texture = Editor.Instance.SetTextures[ani][frame.Texture];
                         Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
                             frame.X, frame.Y, frame.Width, frame.Height, fliph, flipv, texture);
                         frame = prevFrame;
                         xx = (obj.X - frame.Width / 2 + x) * scale;
                         yy = (obj.Y - frame.Height / 2 + y) * scale;
                     }
-
+                    
                     // Border
                     GL.BindTexture(TextureTarget.Texture2D, 0);
                     Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, 2);
                     Viewport.DrawTexturedRect(xx, yy + frame.Height * scale, frame.Width * scale, 2);
                     Viewport.DrawTexturedRect(xx, yy, 2, frame.Height * scale);
                     Viewport.DrawTexturedRect(xx + frame.Width * scale, yy, 2, frame.Height * scale);
+
                 }
             }
-            GL.BindTexture(TextureTarget.Texture2D, FontTextureID);
-            Font.Draw($"RENDERING: {count} OBJECTS", 10, 60, 1);
-            if (Editor.Instance.SelectedObject != null)
-            {
-                string s = "Selected Object: " + Editor.Instance.SelectedObject.Name;
-                Font.Draw(s.ToUpper(), 10, 110, 1);
-            }
+
         }
 
         public void Mouse(float x, float y, float scale, MouseState mouseState)
         {
-            if (Dx != null && Dy != null && !mouseState.IsButtonDown(MouseButton.Left))
-            {
-                Dx = Dy = null;
-            }
-            else if (Editor.Instance.SelectedObject != null && Dx != null && Dy != null)
-            {
-                var obj = Editor.Instance.SelectedObject;
-                obj.X = (int)(x + Dx);
-                obj.Y = (int)(y + Dy);
-                MainFrm.Instance.UpdatePos(obj.X, obj.Y);
-            }
-            else
-            {
-                for (int i = 0; i < SetData.Objects.Count; ++i)
-                {
-                    var obj = SetData.Objects[i];
-                    if (SetAniLink.ContainsKey(obj))
-                    {
-                        var ani = SetAniLink[obj];
-                        var ani2 = ani.Animations[0];
-                        var frame = ani2.Frames[0];
-                        int texture = SetTextures[ani][frame.Texture];
-                        float xx = (obj.X - (frame.Width / 2));
-                        float yy = (obj.Y - (frame.Height / 2));
-
-                        if (x >= xx && x <= xx + frame.Width && y >= yy && y <= yy + frame.Height && mouseState.IsButtonDown(MouseButton.Left))
-                        {
-                            //Viewport.DrawTexturedRect(0, 0, 100, 100);
-                            //MessageBox.Show(obj.Name);
-                            Editor.Instance.SelectedObject = obj;
-                            if (Dx == null && Dy == null)
-                            {
-                                Dx = obj.X - x;
-                                Dy = obj.Y - y;
-                            }
-                            break;
-                        }
-
-                    }
-                }
-            }
         }
     }
 }

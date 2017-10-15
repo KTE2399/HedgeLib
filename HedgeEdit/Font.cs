@@ -15,17 +15,25 @@ namespace HedgeEdit
 
         public static Dictionary<string, Font> Fonts = new Dictionary<string, Font>();
         public List<string> Textures = new List<string>();
-        public Dictionary<char, Vector4> Characters = new Dictionary<char, Vector4>();
+        public Dictionary<char, FontChar> Characters = new Dictionary<char, FontChar>();
 
         public string Name;
         public string Shape;
         public string ResKey;
+
+        public int Texture = 0;
 
         public void LoadFont(string resourceKey)
         {
             string defPath = MainFrm.GetFullPathFromSonicOrcaPath("SONICORCA/FONTS/" + resourceKey + ".font.xml");
             ResKey = resourceKey;
             Load(defPath);
+        }
+
+        public void LoadFontTexture(int i)
+        {
+            string defPath = MainFrm.GetFullPathFromSonicOrcaPath(Textures[i]);
+            Texture = Viewport.LoadTexture(defPath);
         }
 
         public void Draw(string str, float x, float y, float spacing)
@@ -37,9 +45,12 @@ namespace HedgeEdit
                     x += 24;
                     continue;
                 }
-                var vec = Characters[c];
-                Viewport.DrawTexturedRect(x, y, vec.Z, vec.W, vec.X, vec.Y, vec.Z, vec.W);
-                x += vec.Z + spacing;
+                var fontChar = Characters[c];
+                OpenTK.Graphics.OpenGL.GL.Color3(0.2f, 0.2f, 0.2f);
+                Viewport.DrawTexturedRect(x + fontChar.OffsetX + 5, y + fontChar.OffsetY + 5, fontChar.TextureW, fontChar.TextureH, fontChar.TextureX, fontChar.TextureY, fontChar.TextureW, fontChar.TextureH, Texture);
+                OpenTK.Graphics.OpenGL.GL.Color3(1f, 1f, 1f);
+                Viewport.DrawTexturedRect(x + fontChar.OffsetX, y + fontChar.OffsetY, fontChar.TextureW, fontChar.TextureH, fontChar.TextureX, fontChar.TextureY, fontChar.TextureW, fontChar.TextureH, Texture);
+                x += fontChar.TextureW + spacing;
             }
         }
 
@@ -52,22 +63,34 @@ namespace HedgeEdit
             xml.Root.Elements("overlay").ToList().ForEach(t => Textures.Add(MainFrm.GetFullPathFromSonicOrcaPath("SONICORCA/FONTS/" + ResKey + t.Value + ".png")));
             foreach (var chardefElem in chardefs.Elements("chardef"))
             {
-                var rect = new Vector4();
+                var fontChar = new FontChar();
                 var rectElem = chardefElem.Element("rect");
                 char c = chardefElem.Attribute("char").Value[0];
-                rect.X = int.Parse(rectElem.Attribute("x").Value);
-                rect.Y = int.Parse(rectElem.Attribute("y").Value);
-                rect.Z = int.Parse(rectElem.Attribute("w").Value) + 4;
-                rect.W = int.Parse(rectElem.Attribute("h").Value);
+                fontChar.TextureX = int.Parse(rectElem.Attribute("x").Value);
+                fontChar.TextureY = int.Parse(rectElem.Attribute("y").Value);
+                fontChar.TextureW = int.Parse(rectElem.Attribute("w").Value) + 4;
+                fontChar.TextureH = int.Parse(rectElem.Attribute("h").Value);
 
-                if (chardefElem.Attribute("offset") != null)
+                if (chardefElem.Element("offset") != null)
                 {
-                    rect.X += int.Parse(chardefElem.Element("offset").Attribute("x").Value);
-                    rect.Y += int.Parse(chardefElem.Element("offset").Attribute("y").Value);
+                    fontChar.OffsetX = int.Parse(chardefElem.Element("offset").Attribute("x").Value);
+                    fontChar.OffsetY = int.Parse(chardefElem.Element("offset").Attribute("y").Value);
                 }
-                Characters.Add(c, rect);
+                Characters.Add(c, fontChar);
             }
 
         }
+
+        public class FontChar
+        {
+            public int TextureX;
+            public int TextureY;
+            public int TextureW;
+            public int TextureH;
+            public int OffsetX;
+            public int OffsetY;
+        }
+
+
     }
 }

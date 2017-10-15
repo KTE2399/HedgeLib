@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Xml.Linq;
+using OpenTK;
 
 namespace HedgeEdit
 {
@@ -13,11 +14,13 @@ namespace HedgeEdit
     {
 
         public List<Layer> Layers = new List<Layer>();
+        public List<Vector2> Collisions = new List<Vector2>();
 
         public override void Load(Stream fileStream)
         {
             var xml = XDocument.Load(fileStream);
             var tiles = xml.Root.Element("tiles");
+            var collision = xml.Root.Element("collision");
 
             foreach (var layerElem in tiles.Elements("layer"))
             {
@@ -35,6 +38,14 @@ namespace HedgeEdit
                     layer.Rows.Add(arr);
                 }
                 Layers.Add(layer);
+            }
+            var vectors = collision.Element("vectors");
+            foreach (var vectorElem in vectors.Elements("vector"))
+            {
+                string[] a = StringtoStringArray(vectorElem.Attribute("a").Value);
+                string[] b = StringtoStringArray(vectorElem.Attribute("b").Value);
+                Collisions.Add(new Vector2(float.Parse(a[0]), float.Parse(a[1])));
+                Collisions.Add(new Vector2(float.Parse(b[0]), float.Parse(b[1])));
             }
         }
 

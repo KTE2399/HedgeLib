@@ -38,7 +38,7 @@ namespace HedgeEdit
                 var setObj = new SetObject();
                 setObj.Group = commonElem.Name.LocalName;
                 setObj.Key = commonElem.Element("Key").Value;
-                setObj.UID = commonElem.Element("Uid").Value;
+                setObj.GUID = commonElem.Element("Uid").Value;
                 setObj.Name = commonElem.Element("Name").Value;
                 if (commonElem.Element("Layer") != null)
                     setObj.Layer = commonElem.Element("Layer").Value;
@@ -77,7 +77,7 @@ namespace HedgeEdit
                 var def = new XElement("Definition");
                 var common = new XElement("Common");
                 var key = new XElement("Key", sobj.Key);
-                var uid = new XElement("Uid", sobj.UID);
+                var uid = new XElement("Uid", sobj.GUID);
                 var name = new XElement("Name", sobj.Name);
                 var layer = new XElement("Layer", sobj.Layer);
                 var pos = new XElement("Position");
@@ -117,7 +117,7 @@ namespace HedgeEdit
         {
             public string Type;
             public string Group; // Could be a group or common definitions
-            public string UID;
+            public string GUID;
             public string Key;
             public string Layer;
             public string Name;

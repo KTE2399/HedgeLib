@@ -202,12 +202,14 @@ namespace HedgeEdit
             string mapPath = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/MAP.map.xml");
             var font = new Font();
             font.LoadFont("HUD");
+            font.LoadFontTexture(1);
+            Editor.Instance.Font = font;
 
             if (File.Exists(tileset))
             {
                 var tileSet = new TileSet();
                 tileSet.Load(tileset);
-                var frame = tileSet.Tiles["1371"].Frames[0];
+                //var frame = tileSet.Tiles["1371"].Frames[0];
                 //var tilesetTexture = new ViewportSprite("TILESET" + tileSet.Textures[0] + ".png");
                 //tilesetTexture.Position = new OpenTK.Vector2(300, 100);
                 //tilesetTexture.Size = new OpenTK.Vector2(200, 200);
@@ -222,7 +224,8 @@ namespace HedgeEdit
                     {
                         var map = new Map();
                         map.Load(mapPath);
-                        var vpMap = new ViewPortMap(map, tileSet, set, font);
+                        var vpMap = new ViewPortMap(map, tileSet);
+                        editor.Init(set);
                         editor.AddLevelObject(vpMap);
                     }
                 }

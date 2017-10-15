@@ -63,6 +63,7 @@
     <Compile Include="Editor.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="IRenderable.cs" />
+    <Compile Include="Keyboard.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="ObjectRenderAttitudes.cs" />
     <Compile Include="S2HDSetData.cs" />

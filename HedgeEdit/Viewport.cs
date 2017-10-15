@@ -150,14 +150,14 @@ namespace HedgeEdit
             float texW, texH;
             GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out texW);
             GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out texH);
-            double w = (1f / VP.Width) * width;
-            double h = (1f / VP.Height) * height;
-            double x2 = (x / VP.Width) - 1f;
-            double y2 = ((y + height) / VP.Height) - 1f;
-            double xCrop2 = (xCrop / texW);
-            double yCrop2 = (yCrop / texH);
-            double wCrop2 = (wCrop / texW);
-            double hCrop2 = (hCrop / texH);
+            double w = (1d / (double)VP.Width) * (double)width;
+            double h = (1d / (double)VP.Height) * (double)height;
+            double x2 = ((double)x / (double)VP.Width) - 1d;
+            double y2 = (((double)y + (double)height) / (double)VP.Height) - 1d;
+            double xCrop2 = ((double)xCrop / (double)texW);
+            double yCrop2 = ((double)yCrop / (double)texH);
+            double wCrop2 = ((double)wCrop / (double)texW);
+            double hCrop2 = ((double)hCrop / (double)texH);
             GL.Begin(PrimitiveType.Quads);
 
             GL.TexCoord2(flipX ? (xCrop2 + wCrop2) : (xCrop2), flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2, -y2);
