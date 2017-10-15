@@ -142,7 +142,6 @@ namespace HedgeEdit
 
                 }
             }
-
         }
 
         public void Mouse(float x, float y, float scale, MouseState mouseState)

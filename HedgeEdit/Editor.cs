@@ -23,6 +23,9 @@ namespace HedgeEdit
         public S2HDSetData SetData;
         public Dictionary<AniGroup, int[]> SetTextures = new Dictionary<AniGroup, int[]>();
         public Dictionary<S2HDSetData.SetObject, AniGroup> SetAniLink = new Dictionary<S2HDSetData.SetObject, AniGroup>();
+        public List<S2HDSetData.SetObject> LastSelectedObjects = new List<S2HDSetData.SetObject>();
+        public List<int> LastX = new List<int>();
+        public List<int> LastY = new List<int>();
         public float XOffset = 0f;
         public float YOffset = 0f;
         public float TextY = -40f;
