@@ -433,5 +433,17 @@ namespace HedgeEdit
                 // TODO: Show all of the objects currently selected.
             }
         }
+
+        public void FillSetObjectDetails(S2HDSetData.SetObject sobj)
+        {
+            objectProperties.Items.Clear();
+            foreach (var pair in sobj.ExtraData)
+            {
+                var lvi = new ListViewItem(pair.Key);
+                lvi.SubItems.Add(new ListViewItem.ListViewSubItem(lvi, pair.Value.ToString()));
+                lvi.Tag = pair;
+                objectProperties.Items.Add(lvi);
+            }
+        }
     }
 }

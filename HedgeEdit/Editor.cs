@@ -201,7 +201,7 @@ namespace HedgeEdit
                 }
                 else
                 {
-                    for (int i = 0; i < Instance.SetData.Objects.Count; ++i)
+                    for (int i = Instance.SetData.Objects.Count - 1; i >= 0; --i)
                     {
                         var obj = Instance.SetData.Objects[i];
                         if (Instance.SetAniLink.ContainsKey(obj))
@@ -220,6 +220,7 @@ namespace HedgeEdit
                                 {
                                     Dx = obj.X - x;
                                     Dy = obj.Y - y;
+                                    MainFrm.Instance.FillSetObjectDetails(obj);
                                 }
                                 break;
                             }
@@ -227,7 +228,6 @@ namespace HedgeEdit
                         }
                     }
                 }
-
             }
         }
 

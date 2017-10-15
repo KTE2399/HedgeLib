@@ -413,7 +413,7 @@
             // 
             this.bottomSplitContainer.Panel2.Controls.Add(this.objectProperties);
             this.bottomSplitContainer.Panel2.Controls.Add(this.objectTypeLbl);
-            this.bottomSplitContainer.Panel2MinSize = 150;
+            //this.bottomSplitContainer.Panel2MinSize = 150;
             this.bottomSplitContainer.Size = new System.Drawing.Size(250, 228);
             this.bottomSplitContainer.SplitterDistance = 140;
             this.bottomSplitContainer.SplitterWidth = 3;
