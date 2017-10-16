@@ -42,7 +42,7 @@ namespace HedgeEdit
         {
             Modes.Add(new EditingModeTransform());
             Modes.Add(new EditingModeAdd());
-            Mode = Modes[1];
+            Mode = Modes[0];
             Instance = this;
             LastTime = DateTime.Now;
         }

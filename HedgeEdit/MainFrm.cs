@@ -64,67 +64,25 @@ namespace HedgeEdit
         public void UpdatePos(int x,int y) {
             posXBox.Text = x.ToString();
             posYBox.Text = y.ToString();
+            RefreshGUI();
         }
         public void RefreshGUI()
         {
             // Get the selected object(s), if any
-            int selectedObjs = SelectedObjects.Count;
+            // TODO
+            int selectedObjs = Editor.Instance.SelectedObject != null ? 1 : 0;
             bool objsSelected = (selectedObjs > 0),
                  singleObjSelected = (selectedObjs == 1);
-
-            SetObject obj = (singleObjSelected) ?
-                (SelectedObjects[0] as SetObject) : null;
-            SetObjectTransform transform = (obj == null) ? ((singleObjSelected) ?
-                (SelectedObjects[0] as SetObjectTransform) :
-                null) : obj.Transform;
 
             // Update Labels
             objectSelectedLbl.Text = $"{selectedObjs} Object(s) Selected";
 
             // Enable/Disable EVERYTHING
-            posXBox.Enabled = posYBox.Enabled = posZBox.Enabled =
-            rotXBox.Enabled = rotYBox.Enabled = rotZBox.Enabled =
-            viewSelectedBtn.Enabled =
+            posXBox.Enabled = posYBox.Enabled = viewSelectedBtn.Enabled =
             viewSelectedMenuItem.Enabled = singleObjSelected;
 
             removeObjectBtn.Enabled = objsSelected;
 
-            // Update Position Boxes
-            posXBox.Text = (transform != null) ? transform.Position.X.ToString() : "0";
-            posYBox.Text = (transform != null) ? transform.Position.Y.ToString() : "0";
-            posZBox.Text = (transform != null) ? transform.Position.Z.ToString() : "0";
-
-            // Update Rotation Boxes
-            var eulerAngles = (transform != null) ?
-                transform.Rotation.ToEulerAngles() : new Vector3();
-
-            rotXBox.Text = eulerAngles.X.ToString();
-            rotYBox.Text = eulerAngles.Y.ToString();
-            rotZBox.Text = eulerAngles.Z.ToString();
-
-            // Update Parameters
-            objectTypeLbl.Text = (obj != null) ? obj.ObjectType : "";
-            objectProperties.Items.Clear();
-
-            if (obj == null) return;
-            var objTemplate = (Stage.GameType == null ||
-                    !Stage.GameType.ObjectTemplates.ContainsKey(obj.ObjectType)) ?
-                    null : Stage.GameType.ObjectTemplates[obj.ObjectType];
-
-            for (int i = 0; i < obj.Parameters.Count; ++i)
-            {
-                var param = obj.Parameters[i];
-                var templateParam = objTemplate?.Parameters[i];
-
-                var lvi = new ListViewItem((templateParam == null) ?
-                    $"Parameter {i}" : templateParam.Name)
-                {
-                    ToolTipText = templateParam?.Description
-                };
-
-                lvi.SubItems.Add(param.Data.ToString());
-                objectProperties.Items.Add(lvi);
-            }
         }
 
         public void UpdateTitle(string stgID = null)
@@ -444,6 +402,7 @@ namespace HedgeEdit
                 lvi.Tag = pair;
                 objectProperties.Items.Add(lvi);
             }
+            UpdatePos(sobj.X, sobj.Y);
         }
     }
 }

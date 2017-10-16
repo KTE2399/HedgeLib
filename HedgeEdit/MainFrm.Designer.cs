@@ -58,10 +58,6 @@
             this.removeObjectBtn = new System.Windows.Forms.Button();
             this.objectCountLbl = new System.Windows.Forms.Label();
             this.bottomSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.rotZBox = new System.Windows.Forms.TextBox();
-            this.rotYBox = new System.Windows.Forms.TextBox();
-            this.rotXBox = new System.Windows.Forms.TextBox();
-            this.posZBox = new System.Windows.Forms.TextBox();
             this.posYBox = new System.Windows.Forms.TextBox();
             this.posXBox = new System.Windows.Forms.TextBox();
             this.viewSelectedBtn = new System.Windows.Forms.Button();
@@ -70,6 +66,8 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.objectTypeLbl = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.mainSplitContainer)).BeginInit();
             this.mainSplitContainer.Panel1.SuspendLayout();
@@ -308,7 +306,7 @@
             this.mainSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mainSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.mainSplitContainer.Location = new System.Drawing.Point(0, 24);
-            this.mainSplitContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.mainSplitContainer.Margin = new System.Windows.Forms.Padding(2);
             this.mainSplitContainer.Name = "mainSplitContainer";
             // 
             // mainSplitContainer.Panel1
@@ -329,7 +327,7 @@
             this.topSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.topSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.topSplitContainer.Location = new System.Drawing.Point(0, 0);
-            this.topSplitContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.topSplitContainer.Margin = new System.Windows.Forms.Padding(2);
             this.topSplitContainer.Name = "topSplitContainer";
             this.topSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -354,7 +352,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.addObjectBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.addObjectBtn.Location = new System.Drawing.Point(5, 62);
-            this.addObjectBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.addObjectBtn.Margin = new System.Windows.Forms.Padding(2);
             this.addObjectBtn.Name = "addObjectBtn";
             this.addObjectBtn.Size = new System.Drawing.Size(240, 19);
             this.addObjectBtn.TabIndex = 1;
@@ -368,7 +366,7 @@
             this.removeObjectBtn.Enabled = false;
             this.removeObjectBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.removeObjectBtn.Location = new System.Drawing.Point(5, 86);
-            this.removeObjectBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.removeObjectBtn.Margin = new System.Windows.Forms.Padding(2);
             this.removeObjectBtn.Name = "removeObjectBtn";
             this.removeObjectBtn.Size = new System.Drawing.Size(240, 19);
             this.removeObjectBtn.TabIndex = 2;
@@ -393,16 +391,14 @@
             this.bottomSplitContainer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.bottomSplitContainer.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.bottomSplitContainer.Location = new System.Drawing.Point(0, 0);
-            this.bottomSplitContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.bottomSplitContainer.Margin = new System.Windows.Forms.Padding(2);
             this.bottomSplitContainer.Name = "bottomSplitContainer";
             this.bottomSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
             // bottomSplitContainer.Panel1
             // 
-            this.bottomSplitContainer.Panel1.Controls.Add(this.rotZBox);
-            this.bottomSplitContainer.Panel1.Controls.Add(this.rotYBox);
-            this.bottomSplitContainer.Panel1.Controls.Add(this.rotXBox);
-            this.bottomSplitContainer.Panel1.Controls.Add(this.posZBox);
+            this.bottomSplitContainer.Panel1.Controls.Add(this.label2);
+            this.bottomSplitContainer.Panel1.Controls.Add(this.label1);
             this.bottomSplitContainer.Panel1.Controls.Add(this.posYBox);
             this.bottomSplitContainer.Panel1.Controls.Add(this.posXBox);
             this.bottomSplitContainer.Panel1.Controls.Add(this.viewSelectedBtn);
@@ -413,81 +409,20 @@
             // 
             this.bottomSplitContainer.Panel2.Controls.Add(this.objectProperties);
             this.bottomSplitContainer.Panel2.Controls.Add(this.objectTypeLbl);
-            //this.bottomSplitContainer.Panel2MinSize = 150;
             this.bottomSplitContainer.Size = new System.Drawing.Size(250, 228);
             this.bottomSplitContainer.SplitterDistance = 140;
             this.bottomSplitContainer.SplitterWidth = 3;
             this.bottomSplitContainer.TabIndex = 0;
-            // 
-            // rotZBox
-            // 
-            this.rotZBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rotZBox.Enabled = false;
-            this.rotZBox.Location = new System.Drawing.Point(112, 46);
-            this.rotZBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.rotZBox.Name = "rotZBox";
-            this.rotZBox.Size = new System.Drawing.Size(51, 20);
-            this.rotZBox.TabIndex = 8;
-            this.rotZBox.Text = "0";
-            this.rotZBox.Enter += new System.EventHandler(this.NumTxtBx_Enter);
-            this.rotZBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumTxtBx_KeyPress);
-            this.rotZBox.Leave += new System.EventHandler(this.NumTxtBx_Leave);
-            // 
-            // rotYBox
-            // 
-            this.rotYBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rotYBox.Enabled = false;
-            this.rotYBox.Location = new System.Drawing.Point(59, 46);
-            this.rotYBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.rotYBox.Name = "rotYBox";
-            this.rotYBox.Size = new System.Drawing.Size(51, 20);
-            this.rotYBox.TabIndex = 7;
-            this.rotYBox.Text = "0";
-            this.rotYBox.Enter += new System.EventHandler(this.NumTxtBx_Enter);
-            this.rotYBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumTxtBx_KeyPress);
-            this.rotYBox.Leave += new System.EventHandler(this.NumTxtBx_Leave);
-            // 
-            // rotXBox
-            // 
-            this.rotXBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rotXBox.Enabled = false;
-            this.rotXBox.Location = new System.Drawing.Point(5, 46);
-            this.rotXBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.rotXBox.Name = "rotXBox";
-            this.rotXBox.Size = new System.Drawing.Size(51, 20);
-            this.rotXBox.TabIndex = 6;
-            this.rotXBox.Text = "0";
-            this.rotXBox.Enter += new System.EventHandler(this.NumTxtBx_Enter);
-            this.rotXBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumTxtBx_KeyPress);
-            this.rotXBox.Leave += new System.EventHandler(this.NumTxtBx_Leave);
-            // 
-            // posZBox
-            // 
-            this.posZBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.posZBox.Enabled = false;
-            this.posZBox.Location = new System.Drawing.Point(112, 25);
-            this.posZBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
-            this.posZBox.Name = "posZBox";
-            this.posZBox.Size = new System.Drawing.Size(51, 20);
-            this.posZBox.TabIndex = 5;
-            this.posZBox.Text = "0";
-            this.posZBox.Enter += new System.EventHandler(this.NumTxtBx_Enter);
-            this.posZBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumTxtBx_KeyPress);
-            this.posZBox.Leave += new System.EventHandler(this.NumTxtBx_Leave);
             // 
             // posYBox
             // 
             this.posYBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.posYBox.Enabled = false;
-            this.posYBox.Location = new System.Drawing.Point(59, 25);
-            this.posYBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.posYBox.Location = new System.Drawing.Point(37, 46);
+            this.posYBox.Margin = new System.Windows.Forms.Padding(2);
             this.posYBox.Name = "posYBox";
-            this.posYBox.Size = new System.Drawing.Size(51, 20);
+            this.posYBox.Size = new System.Drawing.Size(125, 20);
             this.posYBox.TabIndex = 4;
             this.posYBox.Text = "0";
             this.posYBox.Enter += new System.EventHandler(this.NumTxtBx_Enter);
@@ -499,10 +434,10 @@
             this.posXBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.posXBox.Enabled = false;
-            this.posXBox.Location = new System.Drawing.Point(5, 25);
-            this.posXBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.posXBox.Location = new System.Drawing.Point(37, 22);
+            this.posXBox.Margin = new System.Windows.Forms.Padding(2);
             this.posXBox.Name = "posXBox";
-            this.posXBox.Size = new System.Drawing.Size(51, 20);
+            this.posXBox.Size = new System.Drawing.Size(125, 20);
             this.posXBox.TabIndex = 3;
             this.posXBox.Text = "0";
             this.posXBox.Enter += new System.EventHandler(this.NumTxtBx_Enter);
@@ -516,7 +451,7 @@
             this.viewSelectedBtn.Enabled = false;
             this.viewSelectedBtn.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.viewSelectedBtn.Location = new System.Drawing.Point(5, 70);
-            this.viewSelectedBtn.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.viewSelectedBtn.Margin = new System.Windows.Forms.Padding(2);
             this.viewSelectedBtn.Name = "viewSelectedBtn";
             this.viewSelectedBtn.Size = new System.Drawing.Size(157, 19);
             this.viewSelectedBtn.TabIndex = 2;
@@ -532,7 +467,7 @@
             this.objectSelectedLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.objectSelectedLbl.Name = "objectSelectedLbl";
             this.objectSelectedLbl.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.objectSelectedLbl.Size = new System.Drawing.Size(167, 91);
+            this.objectSelectedLbl.Size = new System.Drawing.Size(250, 140);
             this.objectSelectedLbl.TabIndex = 1;
             this.objectSelectedLbl.Text = "0 Object(s) Selected";
             this.objectSelectedLbl.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -545,11 +480,11 @@
             this.objectProperties.Dock = System.Windows.Forms.DockStyle.Fill;
             this.objectProperties.FullRowSelect = true;
             this.objectProperties.Location = new System.Drawing.Point(0, 23);
-            this.objectProperties.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.objectProperties.Margin = new System.Windows.Forms.Padding(2);
             this.objectProperties.MultiSelect = false;
             this.objectProperties.Name = "objectProperties";
             this.objectProperties.ShowItemToolTips = true;
-            this.objectProperties.Size = new System.Drawing.Size(167, 141);
+            this.objectProperties.Size = new System.Drawing.Size(250, 62);
             this.objectProperties.TabIndex = 0;
             this.objectProperties.UseCompatibleStateImageBehavior = false;
             this.objectProperties.View = System.Windows.Forms.View.Details;
@@ -572,9 +507,27 @@
             this.objectTypeLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.objectTypeLbl.Name = "objectTypeLbl";
             this.objectTypeLbl.Padding = new System.Windows.Forms.Padding(0, 3, 0, 0);
-            this.objectTypeLbl.Size = new System.Drawing.Size(167, 23);
+            this.objectTypeLbl.Size = new System.Drawing.Size(250, 23);
             this.objectTypeLbl.TabIndex = 2;
             this.objectTypeLbl.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 25);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(20, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "X: ";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 49);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(20, 13);
+            this.label2.TabIndex = 6;
+            this.label2.Text = "Y: ";
             // 
             // MainFrm
             // 
@@ -586,7 +539,7 @@
             this.Controls.Add(this.menuStrip);
             this.DoubleBuffered = true;
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(539, 404);
             this.Name = "MainFrm";
             this.Text = "HedgeEdit";
@@ -643,18 +596,16 @@
         private System.Windows.Forms.SplitContainer bottomSplitContainer;
         private System.Windows.Forms.Label objectSelectedLbl;
         private System.Windows.Forms.Button viewSelectedBtn;
-        private System.Windows.Forms.TextBox posZBox;
         private System.Windows.Forms.TextBox posYBox;
         private System.Windows.Forms.TextBox posXBox;
-        private System.Windows.Forms.TextBox rotZBox;
-        private System.Windows.Forms.TextBox rotYBox;
-        private System.Windows.Forms.TextBox rotXBox;
         private System.Windows.Forms.ListView objectProperties;
         private System.Windows.Forms.Label objectTypeLbl;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ToolStripSeparator selectSeparator3;
         private System.Windows.Forms.ToolStripMenuItem advancedModeMenuItem;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
     }
 }
 
