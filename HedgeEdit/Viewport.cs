@@ -168,6 +168,37 @@ namespace HedgeEdit
             GL.End();
         }
 
+        public static void DrawTexturedRectRot(float x, float y, float width, float height, float xCrop, float yCrop, float wCrop, float hCrop, bool flipX, bool flipY, int texture)
+        {
+            GL.BindTexture(TextureTarget.Texture2D, texture);
+            DrawTexturedRectRot(x, y, width, height, xCrop, yCrop, wCrop, hCrop, flipX, flipY);
+        }
+
+
+        public static void DrawTexturedRectRot(float x, float y, float width, float height, float xCrop, float yCrop, float wCrop, float hCrop, bool flipX, bool flipY)
+        {
+
+            float texW, texH;
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureWidth, out texW);
+            GL.GetTexLevelParameter(TextureTarget.Texture2D, 0, GetTextureParameter.TextureHeight, out texH);
+            double w = (1d / (double)VP.Width) * (double)width;
+            double h = (1d / (double)VP.Height) * (double)height;
+            double x2 = ((double)x / (double)VP.Width) - 1d;
+            double y2 = (((double)y + (double)height) / (double)VP.Height) - 1d;
+            double xCrop2 = ((double)xCrop / (double)texW);
+            double yCrop2 = ((double)yCrop / (double)texH);
+            double wCrop2 = ((double)wCrop / (double)texW);
+            double hCrop2 = ((double)hCrop / (double)texH);
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.TexCoord2(flipX ? (xCrop2 + wCrop2) : (xCrop2), !flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2 + w, -y2);
+            GL.TexCoord2(!flipX ? (xCrop2 + wCrop2) : (xCrop2), !flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2 + w, -y2 + h);
+            GL.TexCoord2(!flipX ? (xCrop2 + wCrop2) : (xCrop2), flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2, -y2 + h);
+            GL.TexCoord2(flipX ? (xCrop2 + wCrop2) : (xCrop2), flipY ? (yCrop2) : (yCrop2 + hCrop2)); GL.Vertex2(x2, -y2);
+
+            GL.End();
+        }
+
         public static int LoadTexture(string file)
         {
             return LoadTexture(new Bitmap(file), file);

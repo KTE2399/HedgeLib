@@ -78,9 +78,10 @@ namespace HedgeEdit
                     var ani = Editor.Instance.SetAniLink[obj];
                     var ani2 = ani.Animations[0];
                     bool fliph = false;
+                    bool rot = false;
                     bool flipv = false;
 
-                    ObjectRenderAttitudes.Update(ref obj, ref ani, ref ani2, ref fliph, ref flipv);
+                    ObjectRenderAttitudes.Update(ref obj, ref ani, ref ani2, ref fliph, ref flipv, ref rot);
 
                     var frame = ani2.Frames[0];
                     int texture = Editor.Instance.SetTextures[ani][frame.Texture];
@@ -92,10 +93,13 @@ namespace HedgeEdit
                         xx / scale - xCam > (Viewport.VP.Width * 2 / scale) - xCam || yy / scale - yCam > (Viewport.VP.Height * 2 / scale) - yCam)
                         continue;
 
+                    if (!rot)
+                        Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
+                            frame.X, frame.Y, frame.Width, frame.Height, fliph, flipv, texture);
+                    else
+                        Viewport.DrawTexturedRectRot(xx, yy, frame.Width * scale, frame.Height * scale,
+                            frame.X, frame.Y, frame.Width, frame.Height, fliph, flipv, texture);
 
-                    Viewport.DrawTexturedRect(xx, yy, frame.Width * scale, frame.Height * scale,
-                        frame.X, frame.Y, frame.Width, frame.Height, fliph, flipv, texture);
-                    
                     // Extra Frames
                     if (obj.Key.Contains("MONITOR"))
                     {

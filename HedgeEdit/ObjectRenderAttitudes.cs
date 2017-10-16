@@ -9,7 +9,7 @@ namespace HedgeEdit
     public class ObjectRenderAttitudes
     {
 
-        public static void Update(ref S2HDSetData.SetObject sobj, ref AniGroup anigroup, ref AniGroup.Animation ani, ref bool fliph, ref bool flipv)
+        public static void Update(ref S2HDSetData.SetObject sobj, ref AniGroup anigroup, ref AniGroup.Animation ani, ref bool fliph, ref bool flipv, ref bool rot)
         {
             if (sobj.Key.Contains("SPRING"))
             {
@@ -47,12 +47,13 @@ namespace HedgeEdit
                             ani = anigroup.Animations[2];
                     }
                 }
-                else if (sobj.ExtraData.ContainsKey("Strength"))
+                else
                 {
-                    if (sobj.ExtraData.ContainsKey("Strength"))
-                        ani = anigroup.Animations[0];
-                    else
-                        ani = anigroup.Animations[2];
+                    rot = true;
+                }
+                if (!sobj.ExtraData.ContainsKey("Strength"))
+                {
+                    ani = anigroup.Animations[2];
                 }
             }else
             {
