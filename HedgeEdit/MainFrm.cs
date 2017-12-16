@@ -158,9 +158,7 @@ namespace HedgeEdit
             var test2 = new ViewportSprite("test.png");
             test2.Position = new OpenTK.Vector2(150, 100);
             test2.Size = new OpenTK.Vector2(200, 200);
-            editor.AddLevelObject(test2);
-            editor.AddLevelObject(test);
-
+            
 
             string tileset = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/TILESET.tileset.xml");
             string binding = GetFullPathFromSonicOrcaPath("SONICORCA/LEVELS/EHZ/BINDING.binding.xml");
@@ -195,6 +193,9 @@ namespace HedgeEdit
                     }
                 }
             }
+            editor.AddLevelObject(test2);
+            editor.AddLevelObject(test);
+
         }
 
         private void Application_Idle(object sender, EventArgs e)

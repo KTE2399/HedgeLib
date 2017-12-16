@@ -69,7 +69,16 @@ namespace HedgeEdit
                     ii++;
                 }
             }
-            
+
+            // Draws the Selected Tile.
+            if (Editor.EditingModeMoveTile.SelectedTile != null)
+            {
+                // The OpenGL Texture ID
+                int texture = TileTextures[Editor.EditingModeMoveTile.SelectedTile.Frames[0].Texture];
+                Viewport.DrawTexturedRect((Editor.EditingModeMoveTile.SelectedTileX * 64 + x) * scale, (Editor.EditingModeMoveTile.SelectedTileY * 64 + y) * scale, 64 * scale, 64 * scale, Editor.EditingModeMoveTile.SelectedTile.Frames[0].X, Editor.EditingModeMoveTile.SelectedTile.Frames[0].Y, 64, 64, false, false, texture);
+            }
+
+
             for (int i = 0; i < Editor.Instance.SetData.Objects.Count; ++i)
             {
                 var obj = Editor.Instance.SetData.Objects[i];

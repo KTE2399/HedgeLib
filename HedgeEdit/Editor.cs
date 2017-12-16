@@ -42,6 +42,7 @@ namespace HedgeEdit
         {
             Modes.Add(new EditingModeTransform());
             Modes.Add(new EditingModeAdd());
+            Modes.Add(new EditingModeMoveTile());
             Mode = Modes[0];
             Instance = this;
             LastTime = DateTime.Now;
@@ -290,6 +291,89 @@ namespace HedgeEdit
                         }
                     }
                 }
+            }
+        }
+        public class EditingModeMoveTile : EditingMode
+        {
+            public float? Dx = null;
+            public float? Dy = null;
+            public static TileSet.Tile SelectedTile;
+            public static int SelectedTileX;
+            public static int SelectedTileY;
+            public static Map.Layer SelectedTileLayer;
+
+            public EditingModeMoveTile() : base("Tile Movement")
+            {
+
+            }
+
+            public override void Draw(float x, float y, float xCam, float yCam, float scale)
+            {
+                if (SelectedTile != null)
+                {
+                    string s = "Tile Selected";
+                    Instance.Font.Draw(s.ToUpper(), 10, Instance.TextY += 50, 1);
+                }
+            }
+
+            public override void Mouse(float x, float y, float scale, MouseState mouseState)
+            {
+                if (Dx != null && Dy != null && SelectedTile != null && !mouseState.IsButtonDown(MouseButton.Left))
+                {
+                    var map = Objects[0] as ViewPortMap;
+                    SelectedTileLayer.Rows[SelectedTileY][SelectedTileX] = map.TileSet.Tiles.First(t => t.Value == SelectedTile).Key;
+                    Dx = Dy = null;
+                    SelectedTile = null;
+                }
+                else if (SelectedTile != null && Dx != null && Dy != null)
+                {
+                    SelectedTileX = (int)(x + Dx) / 64;
+                    SelectedTileY = (int)(y + Dy) / 64;
+                }
+                else if (mouseState.IsButtonDown(MouseButton.Left) && Dx == null && Dy == null)
+                {
+                    var map = Objects[0] as ViewPortMap;
+                    foreach (var layer in map.Map.Layers)
+                    {
+                        int ii = 0;
+                        foreach (string[] rows in layer.Rows)
+                        {
+                            for (int i = 0; i < rows.Length; ++i)
+                            {
+                                // The ID of the tile
+                                string id = rows[i];
+                                // Remove the flipping from the ID
+                                if (id[0] == 'h' || id[0] == 'v')
+                                    id = id.Substring(1);
+                                // Check if the ID is null, No need to render theses
+                                if (rows[i] == "0")
+                                    continue;
+                                // Checks if the Tile exist
+                                if (!map.TileSet.Tiles.ContainsKey(id))
+                                    continue;
+                                var tile = map.TileSet.Tiles[id];
+                                // The X and Y position of the tile without Scale
+                                float xx = i * 64;
+                                float yy = ii * 64;
+                                if (x >= xx && x <= xx + 64 && y >= yy && y <= yy + 64)
+                                {
+                                    SelectedTileLayer = layer;
+                                    SelectedTile = tile;
+                                    rows[i] = "0";
+                                    //tile.Frames[0].X = 0;
+                                    Dx = Dy = 0;
+                                    return;
+                                }
+                            }
+                            ii++;
+                        }
+                    }
+                }
+            }
+
+            public static void MoveTile(int x, int y, Map map, TileSet tile)
+            {
+
             }
         }
 
